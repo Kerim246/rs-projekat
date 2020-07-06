@@ -1,0 +1,9 @@
+#tbAddOwner,#tbAddVehicle {
+    -fx-graphic: url("/images/list-add.png");
+}
+#tbEditOwner,#tbEditVehicle {
+     -fx-graphic: url("/images/edit.png");
+}
+#tbRemoveOwner,#tbRemoveVehicle {
+    -fx-graphic: url("/images/delete.png");
+ }

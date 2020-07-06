@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
+    <stylesheets>
+        <URL value="@/css/main.css" />
+    </stylesheets>
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <menus>
+                <Menu mnemonicParsing="false" text="Opcije">
+                    <items>
+                        <RadioMenuItem fx:id="menuDb" mnemonicParsing="false" onAction="#prebaciSQL" text="SQLite " />
+                        <RadioMenuItem fx:id="menuXml" mnemonicParsing="false" onAction="#prebaciXML" text="XML" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+    <center>
+        <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+            <Tab fx:id="materialsTab" text="Materials">
+                <content>
+                    <BorderPane prefHeight="200.0" prefWidth="200.0">
+                        <top>
+                            <HBox prefHeight="36.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+                                <children>
+                                    <Label text="Search: ">
+                                        <HBox.margin>
+                                            <Insets left="5.0" top="10.0" />
+                                        </HBox.margin></Label>
+                                    <TextField>
+                                        <HBox.margin>
+                                            <Insets top="5.0" />
+                                        </HBox.margin>
+                                    </TextField>
+                                    <Button fx:id="tbAddMaterial" mnemonicParsing="false" onAction="#actAddMaterial">
+                                        <HBox.margin>
+                                            <Insets left="5.0" top="5.0" />
+                                        </HBox.margin>
+                                        <graphic>
+                                            <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                    <Image url="@../images/list-add.png" />
+                                                </image>
+                                            </ImageView>
+                                        </graphic>
+                                    </Button>
+                                    <Button fx:id="tbEditMaterial" mnemonicParsing="false" onAction="#actRemoveMaterial">
+                                        <HBox.margin>
+                                            <Insets left="5.0" top="5.0" />
+                                        </HBox.margin>
+                                        <graphic>
+                                            <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                    <Image url="@../images/delete.png" />
+                                                </image>
+                                            </ImageView>
+                                        </graphic>
+                                    </Button>
+                                    <Button fx:id="tbRemoveMaterial" mnemonicParsing="false" onAction="#actEditMaterial">
+                                        <HBox.margin>
+                                            <Insets left="5.0" top="5.0" />
+                                        </HBox.margin>
+                                        <graphic>
+                                            <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                    <Image url="@../images/edit.png" />
+                                                </image>
+                                            </ImageView>
+                                        </graphic>
+                                    </Button>
+                                </children>
+                            </HBox>
+                        </top>
+                        <center>
+                            <TableView fx:id="tableMaterials" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                <columns>
+                                    <TableColumn fx:id="colId" prefWidth="93.0" text="ID" />
+                                    <TableColumn fx:id="colName" prefWidth="124.0" text="name" />
+                                    <TableColumn fx:id="colType" prefWidth="105.0" text="type" />
+                                    <TableColumn fx:id="colDate" prefWidth="124.0" text="Publication Date" />
+                                </columns></TableView>
+                        </center></BorderPane>
+                </content>
+
+            </Tab>
+        </TabPane>
+    </center>
+</BorderPane>
