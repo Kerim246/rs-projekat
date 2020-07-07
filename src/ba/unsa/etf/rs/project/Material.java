@@ -12,7 +12,7 @@ public class Material {
     public Material() {
     }
 
-    public Material(int id, String name, Type type, String content, LocalDate publication_date, Subject subject) {
+    public Material(int id, String name, Type type, LocalDate publication_date, Subject subject,String content) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -21,7 +21,7 @@ public class Material {
         this.subject = subject;
     }
 
-    public Material(String name, Type type, String content, LocalDate publication_date, Subject subject) {
+    public Material(String name, Type type, LocalDate publication_date, Subject subject,String content) {
         this.name = name;
         this.type = type;
         this.content = content;

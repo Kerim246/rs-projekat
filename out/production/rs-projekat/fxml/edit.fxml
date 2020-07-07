@@ -53,22 +53,12 @@
                 <Insets right="65.0" />
             </GridPane.margin>
         </ButtonBar>
-        <TextField fx:id="fldNaziv" GridPane.columnIndex="1">
+        <TextField fx:id="fldName" GridPane.columnIndex="1">
             <GridPane.margin>
                 <Insets right="30.0" />
             </GridPane.margin>
         </TextField>
-        <TextField fx:id="fldOpis" GridPane.columnIndex="1" GridPane.rowIndex="1">
-            <GridPane.margin>
-                <Insets right="30.0" />
-            </GridPane.margin>
-        </TextField>
-        <TextField fx:id="fldDatum" GridPane.columnIndex="1" GridPane.rowIndex="2">
-            <GridPane.margin>
-                <Insets right="30.0" />
-            </GridPane.margin>
-        </TextField>
-        <TextField fx:id="fldPredmet" prefHeight="25.0" prefWidth="167.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+        <TextField fx:id="fldDate" GridPane.columnIndex="1" GridPane.rowIndex="2">
             <GridPane.margin>
                 <Insets right="30.0" />
             </GridPane.margin>
@@ -77,10 +67,16 @@
          <padding>
             <Insets left="5.0" />
          </padding></Label>
-      <TextArea fx:id="fldSadrzaj" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+      <TextArea fx:id="fldContent" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
          <GridPane.margin>
             <Insets right="30.0" />
          </GridPane.margin>
       </TextArea>
+      <ComboBox fx:id="comboType" prefHeight="25.0" prefWidth="182.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <TextField fx:id="fldSubject" GridPane.columnIndex="1" GridPane.rowIndex="3">
+         <GridPane.margin>
+            <Insets right="30.0" />
+         </GridPane.margin>
+      </TextField>
     </children>
 </GridPane>

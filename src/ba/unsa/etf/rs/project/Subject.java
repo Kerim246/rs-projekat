@@ -64,4 +64,9 @@ public class Subject {
     public void setName(String naziv) {
         this.name = naziv;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

@@ -1,5 +1,8 @@
 package ba.unsa.etf.rs.project;
 
+import javafx.beans.Observable;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableObjectValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -11,7 +14,8 @@ public class SubjectDAO {
     private static SubjectDAO instance;
     private static Connection connection;
     private PreparedStatement getProfessorsUpit,getAllAccounts,getProfessorMaterial,getProfesorUpit,nadjiPredmetUpit,getProfessorPredmetUpit,getAllPredmet,nadjiPredmetId,addMaterialUpit,getIdMaterial;
-    private PreparedStatement findTypeStatement;
+    private PreparedStatement findTypeStatement,getAllTypesStatement,findTypeStatementName;
+   
 
     public static SubjectDAO getInstance() {
         if (instance == null) instance = new SubjectDAO();
@@ -41,7 +45,7 @@ public class SubjectDAO {
         try {
             getProfessorsUpit = connection.prepareStatement("SELECT * from Professor");
             getAllAccounts = connection.prepareStatement("SELECT a.id,a.username,a.password,a.professor from account a,professor p where a.professor = p.id");
-            getProfessorMaterial = connection.prepareStatement("SELECT m.id,m.name,m.type,m.content,m.publication_date,m.subject_id,pr.id from material m,professor pr,subject p,type t where m.subject_id = p.id AND p.professor = pr.id AND t.id = m.type");
+            getProfessorMaterial = connection.prepareStatement("SELECT m.id,m.name,m.type,m.publication_date,m.subject_id,m.content,pr.id from material m,professor pr,subject p,type t where m.subject_id = p.id AND p.professor = pr.id AND t.id = m.type");
             nadjiPredmetUpit = connection.prepareStatement("SELECT * from subject where name=?");
             getAllPredmet = connection.prepareStatement("SELECT * from subject");
             getProfesorUpit = connection.prepareStatement("SELECT * from professor where id=?");
@@ -50,6 +54,8 @@ public class SubjectDAO {
             getIdMaterial = connection.prepareStatement("SELECT Max(id)+1 FROM material");
 
             findTypeStatement = connection.prepareStatement("SELECT * from type where id=?");
+            getAllTypesStatement = connection.prepareStatement("SELECT * from type");
+            findTypeStatementName = connection.prepareStatement("SELECT * from type where name=?");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -95,7 +101,7 @@ public class SubjectDAO {
 
             while(rs.next()) {
                 if (rs.getInt(7) == id_prof)                // Ako je to taj profesor koji se logirao
-                    materijali.add(new Material(rs.getInt(1), rs.getString(2), findType(rs.getInt(3)), rs.getString(4), LocalDate.parse(rs.getString(5)), findSubjectId(rs.getInt(6))));
+                    materijali.add(new Material(rs.getInt(1), rs.getString(2), findType(rs.getInt(3)),  LocalDate.parse(rs.getString(4)), findSubjectId(rs.getInt(5)),rs.getString(6)));
                 }
 
         } catch (SQLException e) {
@@ -106,6 +112,7 @@ public class SubjectDAO {
     }
 
     public Subject findSubject(String predmet) throws SQLException {
+     //   System.out.println("\n"+predmet);
         nadjiPredmetUpit.setString(1,predmet);
         ResultSet rs = nadjiPredmetUpit.executeQuery();
         Profesor profesor = new Profesor();
@@ -123,7 +130,7 @@ public class SubjectDAO {
             }
             p.setId(rs.getInt(1));
             p.setName(rs.getString(2));
-            System.out.println(p.getName());
+           // System.out.println(p.getName());
             p.setSemestar(rs.getInt(3));
             p.setEcts(rs.getInt(4));
             p.setObligatory(rs.getInt(5));
@@ -170,13 +177,14 @@ public class SubjectDAO {
             if(rs.next()){
                 id = rs.getInt(1);
             }
-
+//            System.out.println(id + " " + material.getName() + " " + material.getType().getId() + " "+ material.getContent()+ " "+ material.getPublication_date().toString() + material.getSubject().getId());
+       //     System.out.println("\n"+material.getSubject().getId());
             addMaterialUpit.setInt(1,id);
             addMaterialUpit.setString(2, material.getName());
             addMaterialUpit.setInt(3, material.getType().getId());
-            addMaterialUpit.setString(4, material.getContent());
-            addMaterialUpit.setString(5, material.getPublication_date().toString());
-            addMaterialUpit.setInt(6, material.getSubject().getId());
+            addMaterialUpit.setString(4, material.getPublication_date().toString());
+            addMaterialUpit.setInt(5, material.getSubject().getId());
+            addMaterialUpit.setString(6, material.getContent());
 
             addMaterialUpit.executeUpdate();
         } catch (SQLException e) {
@@ -194,5 +202,26 @@ public class SubjectDAO {
         }
 
         return type;
+    }
+
+    public Type findType(String name) throws SQLException {
+        findTypeStatementName.setString(1,name);
+        ResultSet rs = findTypeStatementName.executeQuery();
+        Type type = new Type();
+        if(rs.next()){
+            type.setId(rs.getInt(1));
+            type.setName(rs.getString(2));
+        }
+
+        return type;
+    }
+
+    public ObservableList<Type> getAllTypes() throws SQLException {
+        ResultSet rs = getAllTypesStatement.executeQuery();
+        ObservableList<Type> types = FXCollections.observableArrayList();
+        while (rs.next()){
+            types.add(new Type(rs.getInt(1),rs.getString(2)));
+        }
+        return types;
     }
 }
