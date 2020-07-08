@@ -28,6 +28,8 @@ public class MainController {
     public TableColumn colDate;
     private int id_profesora;
     public TextField fldSearch;
+    public Label labelStatus;
+    private int pom = 0;
 
     public MainController(SubjectDAO subjectDAO,int id_profesora){
         this.subjectDAO = subjectDAO;
@@ -42,7 +44,10 @@ public class MainController {
         colDate.setCellValueFactory(new PropertyValueFactory<Profesor,Integer>("publication_date"));
 
         tableMaterials.setItems(subjectDAO.getProfessorMaterial(id_profesora));
+        if(pom ==0)
+        labelStatus.setText("Welcome to application!");
 
+        pom++;
         tableMaterials.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Material>() {
             @Override
             public void changed(ObservableValue<? extends Material> observableValue, Material oldBook, Material newBook) {
@@ -65,6 +70,7 @@ public class MainController {
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
+                labelStatus.setText("Searching materials");
 
                 String lowerCaseFilter = newValue.toLowerCase();
 
@@ -92,6 +98,7 @@ public class MainController {
     }
 
     public void actAddMaterial(ActionEvent actionEvent) {
+        labelStatus.setText("Adding Material");
         Stage editMaterialWindow = new Stage();
         Parent root = null;
         try {
@@ -106,7 +113,11 @@ public class MainController {
                 Material materijal = editController.getMaterial();
                 if (materijal != null) {
                     subjectDAO.addMaterial(materijal);
+                    labelStatus.setText("Material added");
                     initialize();
+                }
+                else {
+                    labelStatus.setText("Welcome to application");
                 }
 
             });
@@ -117,6 +128,7 @@ public class MainController {
     }
 
     public void actRemoveMaterial(ActionEvent actionEvent) {
+        labelStatus.setText("Removing Material");
         Material material = (Material) tableMaterials.getSelectionModel().getSelectedItem();
         if (material != null) {
             try {
@@ -128,7 +140,11 @@ public class MainController {
                 if (result.get() == ButtonType.OK) {
                     subjectDAO.deleteMaterial(material);
                     tableMaterials.getSelectionModel().selectFirst();
+                    labelStatus.setText("Material removed");
                     initialize();
+                }
+                else {
+                    labelStatus.setText("Welcome to application!");
                 }
             } catch(IllegalArgumentException e){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -141,6 +157,7 @@ public class MainController {
     }
 
     public void actEditMaterial(ActionEvent actionEvent) {
+        labelStatus.setText("Editing Material");
         Stage editMaterialWindow = new Stage();
         Parent root = null;
         try {
@@ -158,7 +175,11 @@ public class MainController {
                 Material materijal = editController.getMaterial();
                 if (materijal != null) {
                     subjectDAO.updateMaterial(materijal);
+                    labelStatus.setText("Material edited");
                     initialize();
+                }
+                else {
+                    labelStatus.setText("Welcome to application!");
                 }
 
             });

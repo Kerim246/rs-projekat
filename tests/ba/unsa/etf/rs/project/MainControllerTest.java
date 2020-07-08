@@ -56,12 +56,11 @@ class MainControllerTest {
 
         robot.clickOn("#fldName");
         robot.write("Predavanje12");
-        robot.clickOn("#fldDate");
-        robot.write("2020-08-10");
-        robot.clickOn("#fldSubject");
-        robot.write("Razvoj softvera");
-        robot.clickOn("#fldContent");
-        robot.write("Ovo je sadrzaj");
+     //   robot.clickOn("#fldDate");
+     //   robot.write("2020-08-10");
+      //  robot.clickOn("#fldSubject");
+      //  robot.write("Razvoj softvera");
+
 
         ComboBox comboType = robot.lookup("#comboType").queryAs(ComboBox.class);
 
@@ -76,6 +75,23 @@ class MainControllerTest {
 
         robot.clickOn("Predavanje");
 
+        ComboBox comboSubject = robot.lookup("#comboSubject").queryAs(ComboBox.class);
+
+        Platform.runLater(() -> comboSubject.show());
+
+        // Čekamo da se pojavi meni
+        try {
+            Thread.sleep(400);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        robot.clickOn("Razvoj softvera");
+
+
+        robot.clickOn("#fldContent");
+        robot.write("Ovo je sadrzaj");
+
         robot.clickOn("#btnOk");
 
         try {
@@ -83,6 +99,7 @@ class MainControllerTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         ObservableList<Material> materials = subjectDAO.getAllMaterials();
 
         assertEquals("Predavanje12",materials.get(materials.size()-1).getName());
@@ -114,9 +131,9 @@ class MainControllerTest {
         robot.clickOn("#fldDate");
         robot.press(KeyCode.CONTROL).press(KeyCode.A).release(KeyCode.A).release(KeyCode.CONTROL);
         robot.write("2020-04-10");
-        robot.clickOn("#fldSubject");
-        robot.press(KeyCode.CONTROL).press(KeyCode.A).release(KeyCode.A).release(KeyCode.CONTROL);
-        robot.write("Razvoj softvera");
+      //  robot.clickOn("#fldSubject");
+      //  robot.press(KeyCode.CONTROL).press(KeyCode.A).release(KeyCode.A).release(KeyCode.CONTROL);
+      //  robot.write("Razvoj softvera");
         robot.clickOn("#fldContent");
         robot.press(KeyCode.CONTROL).press(KeyCode.A).release(KeyCode.A).release(KeyCode.CONTROL);
         robot.write("Novi sadrzaj");

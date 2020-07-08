@@ -79,14 +79,17 @@
                             </HBox>
                         </top>
                         <center>
-                            <TableView fx:id="tableMaterials" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                            <TableView fx:id="tableMaterials" prefHeight="224.0" prefWidth="580.0" BorderPane.alignment="CENTER">
                                 <columns>
                                     <TableColumn fx:id="colName" prefWidth="124.0" text="name" />
                                     <TableColumn fx:id="colType" prefWidth="105.0" text="type" />
                                     <TableColumn fx:id="colDate" prefWidth="124.0" text="Publication Date" />
                                     <TableColumn fx:id="colSubject" prefWidth="93.0" text="Subject" />
                                 </columns></TableView>
-                        </center></BorderPane>
+                        </center>
+                  <bottom>
+                     <Label fx:id="labelStatus" BorderPane.alignment="CENTER" />
+                  </bottom></BorderPane>
                 </content>
 
             </Tab>

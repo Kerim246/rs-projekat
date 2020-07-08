@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class EditController {
     public TextField fldName;
     public TextField fldDate;
-    public TextField fldSubject;
+    public ComboBox comboSubject;
     public TextArea fldContent;
     public ComboBox comboType;
     private ObservableList<Type> types;
@@ -25,8 +25,6 @@ public class EditController {
     private static SubjectDAO dao;
     private Material material;
     public Button btnOk;
-
-
 
     public EditController(Material material){
         this.dao = SubjectDAO.getInstance();
@@ -36,25 +34,56 @@ public class EditController {
     @FXML
     public void initialize() throws SQLException {
         types = dao.getAllTypes();
+        subjects = dao.getAllSubjects();
         comboType.setItems(types);
+        comboSubject.setItems(subjects);
         if(material == null){
             fldName.getStyleClass().add("poljeNijeIspravno");
-            fldDate.getStyleClass().add("poljeNijeIspravno");
+            fldDate.getStyleClass().add("poljeIspravno");
+            fldDate.setText(LocalDate.now().toString());
             fldContent.getStyleClass().add("poljeNijeIspravno");
-            fldSubject.getStyleClass().add("poljeNijeIspravno");
+           // comboSubject.getStyleClass().add("poljeNijeIspravno");
         }
         else {
             fldName.getStyleClass().add("poljeIspravno");
             fldDate.getStyleClass().add("poljeIspravno");
             fldContent.getStyleClass().add("poljeIspravno");
-            fldSubject.getStyleClass().add("poljeIspravno");
+            comboSubject.getStyleClass().add("poljeIspravno");
 
             fldName.setText(material.getName());
             fldContent.setText(material.getContent());
             fldDate.setText(material.getPublication_date().toString());
-            fldSubject.setText(material.getSubject().getName());
+            comboSubject.setValue(material.getSubject().getName());
             comboType.setValue(material.getType());
         }
+        fldName.textProperty().addListener((obs, oldIme, newIme) -> {
+            if (!newIme.isEmpty() && newIme.length() > 3) {
+                fldName.getStyleClass().removeAll("poljeNijeIspravno");
+                fldName.getStyleClass().add("poljeIspravno");
+            } else {
+                fldName.getStyleClass().removeAll("poljeIspravno");
+                fldName.getStyleClass().add("poljeNijeIspravno");
+            }
+        });
+        fldContent.textProperty().addListener((obs, oldIme, newIme) -> {
+            if (!newIme.isEmpty() && newIme.length() > 3) {
+                fldContent.getStyleClass().removeAll("poljeNijeIspravno");
+                fldContent.getStyleClass().add("poljeIspravno");
+            } else {
+                fldContent.getStyleClass().removeAll("poljeIspravno");
+                fldContent.getStyleClass().add("poljeNijeIspravno");
+            }
+        });
+        fldDate.textProperty().addListener((obs, oldIme, newIme) -> {
+            if (!newIme.isEmpty() && newIme.length() > 3) {
+                fldDate.getStyleClass().removeAll("poljeNijeIspravno");
+                fldDate.getStyleClass().add("poljeIspravno");
+            } else {
+                fldDate.getStyleClass().removeAll("poljeIspravno");
+                fldDate.getStyleClass().add("poljeNijeIspravno");
+            }
+        });
+
     }
 
     private Subject findSubject(String predmet){
@@ -74,8 +103,8 @@ public class EditController {
 
     public void actOk(ActionEvent actionEvent) {
         try {
-             System.out.println(fldName.getText() + " " +findType(comboType.getValue().toString()) + " " +fldContent.getText() + " "+ LocalDate.parse(fldDate.getText()) + " " +findSubject(fldSubject.getText()));
-            material = new Material(fldName.getText(),findType(comboType.getValue().toString()), LocalDate.parse(fldDate.getText()),findSubject(fldSubject.getText()),fldContent.getText());
+          //   System.out.println(fldName.getText() + " " +findType(comboType.getValue().toString()) + " " +fldContent.getText() + " "+ LocalDate.parse(fldDate.getText()) + " " +findSubject(fldSubject.getText()));
+            material = new Material(fldName.getText(),findType(comboType.getValue().toString()), LocalDate.parse(fldDate.getText()),findSubject(comboSubject.getValue().toString()),fldContent.getText());
 
             Stage stage = (Stage) btnOk.getScene().getWindow();
             stage.close();

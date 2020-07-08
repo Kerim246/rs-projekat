@@ -66,6 +66,29 @@ public class SubjectDAO {
 
     }
 
+    public ObservableList<Subject> getAllSubjects() throws SQLException {
+        ResultSet rs = getAllPredmet.executeQuery();
+        ObservableList<Subject> subjects = FXCollections.observableArrayList();
+
+        while(rs.next()){
+            subjects.add(new Subject(rs.getInt(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getInt(5),findProfessor(rs.getInt(6))));
+        }
+
+        return subjects;
+    }
+
+    public Profesor findProfessor(int id) throws SQLException {
+        getProfesorUpit.setInt(1,id);
+
+        Profesor profesor = new Profesor();
+        ResultSet rs = getProfesorUpit.executeQuery();
+        if(rs.next()){
+            profesor = new Profesor(rs.getInt(1),rs.getString(2),rs.getString(3),LocalDate.parse(rs.getString(4)));
+        }
+
+        return profesor;
+    }
+
     public ObservableList<Material> getAllMaterials() throws SQLException {
         ObservableList<Material> materials = FXCollections.observableArrayList();
 
