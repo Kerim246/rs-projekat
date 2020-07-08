@@ -157,30 +157,15 @@ class MainControllerTest {
         robot.clickOn("#materialsTab");
         robot.clickOn("#tableMaterials");
 
-
-        // Selektujemo Mehu Mehića
-        //robot.press(KeyCode.DOWN).release(KeyCode.DOWN);
-        //robot.clickOn("#tabelaVlasnici");
         robot.clickOn("Predavanje12");
 
         robot.clickOn("#tbRemoveMaterial");
 
-        // Čekamo da dijalog postane vidljiv
-      //  robot.lookup(".dialog-pane").tryQuery().isPresent();
 
-        // Klik na dugme Ok
         DialogPane dialogPane = robot.lookup(".dialog-pane").queryAs(DialogPane.class);
         Button okButton = (Button) dialogPane.lookupButton(ButtonType.OK);
         robot.clickOn(okButton);
-
-
-        // Čekamo da se pojavi novi dijalog koji kaže da nije moguće brisati
-
-
-        // Klik na dugme Ok
-
-
-        // Nije obrisan
+        
         ObservableList<Material> materialss = subjectDAO.getAllMaterials();
         assertEquals(2, materialss.size());
     }
