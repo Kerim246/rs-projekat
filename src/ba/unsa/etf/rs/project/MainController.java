@@ -2,6 +2,8 @@ package ba.unsa.etf.rs.project;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,13 +21,13 @@ import static javafx.scene.control.PopupControl.USE_COMPUTED_SIZE;
 public class MainController {
 
     public SubjectDAO subjectDAO;
-    public Tab materialsTab;
     public TableView tableMaterials;
     public TableColumn colSubject;
     public TableColumn colName;
     public TableColumn colType;
     public TableColumn colDate;
     private int id_profesora;
+    public TextField fldSearch;
 
     public MainController(SubjectDAO subjectDAO,int id_profesora){
         this.subjectDAO = subjectDAO;
@@ -55,6 +57,30 @@ public class MainController {
                 tableMaterials.refresh();
             }
         });
+
+        FilteredList<Material> filteredData = new FilteredList<>(subjectDAO.getProfessorMaterial(id_profesora), b->true);
+
+        fldSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(material -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (material.getName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+
+                return false;
+            });
+        });
+
+        SortedList<Material> sortedData = new SortedList<>(filteredData);
+
+        sortedData.comparatorProperty().bind(tableMaterials.comparatorProperty());
+
+        tableMaterials.setItems(sortedData);
 
     }
 
