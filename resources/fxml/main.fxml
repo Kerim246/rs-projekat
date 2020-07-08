@@ -13,10 +13,10 @@
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
-                <Menu mnemonicParsing="false" text="Opcije">
+                <Menu mnemonicParsing="false" text="Options">
                     <items>
-                        <RadioMenuItem fx:id="menuDb" mnemonicParsing="false" onAction="#prebaciSQL" text="SQLite " />
-                        <RadioMenuItem fx:id="menuXml" mnemonicParsing="false" onAction="#prebaciXML" text="XML" />
+                        <RadioMenuItem fx:id="menuDb" mnemonicParsing="false" onAction="#openXML" text="Open from XML file" />
+                        <RadioMenuItem fx:id="menuXml" mnemonicParsing="false" onAction="#saveXML" text="Save in XML file" />
                     </items>
                 </Menu>
             </menus>

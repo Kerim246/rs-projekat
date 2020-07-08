@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="11.0.4" class="java.beans.XMLDecoder">
+ <object class="java.util.ArrayList">
+  <void method="add">
+   <object class="ba.unsa.etf.rs.project.Material">
+    <void property="content">
+     <string>asdasdasdasdasdas</string>
+    </void>
+    <void property="name">
+     <string>asdasdasdasaaaaaasdasda</string>
+    </void>
+    <void property="publication_date">
+     <object class="java.time.LocalDate" method="parse">
+      <string>2020-10-03</string>
+     </object>
+    </void>
+    <void property="subject">
+     <object class="ba.unsa.etf.rs.project.Subject">
+      <void property="ects">
+       <int>5</int>
+      </void>
+      <void property="id">
+       <int>1</int>
+      </void>
+      <void property="name">
+       <string>Razvoj softvera</string>
+      </void>
+      <void property="obligatory">
+       <int>1</int>
+      </void>
+      <void property="profesor">
+       <object class="ba.unsa.etf.rs.project.Profesor">
+        <void property="datum_zaposljavanja">
+         <object class="java.time.LocalDate" method="parse">
+          <string>2020-03-04</string>
+         </object>
+        </void>
+        <void property="id">
+         <int>1</int>
+        </void>
+        <void property="name">
+         <string>Kerim</string>
+        </void>
+        <void property="surname">
+         <string>Bektasevic</string>
+        </void>
+       </object>
+      </void>
+      <void property="semestar">
+       <int>1</int>
+      </void>
+     </object>
+    </void>
+    <void property="type">
+     <object class="ba.unsa.etf.rs.project.Type">
+      <void property="id">
+       <int>1</int>
+      </void>
+      <void property="name">
+       <string>Predavanje</string>
+      </void>
+     </object>
+    </void>
+   </object>
+  </void>
+  <void method="add">
+   <object class="ba.unsa.etf.rs.project.Material">
+    <void property="content">
+     <string>asdasdasda</string>
+    </void>
+    <void property="id">
+     <int>1</int>
+    </void>
+    <void property="name">
+     <string>asdadasaaaa</string>
+    </void>
+    <void property="publication_date">
+     <object class="java.time.LocalDate" method="parse">
+      <string>2020-04-03</string>
+     </object>
+    </void>
+    <void property="subject">
+     <object class="ba.unsa.etf.rs.project.Subject">
+      <void property="ects">
+       <int>5</int>
+      </void>
+      <void property="id">
+       <int>1</int>
+      </void>
+      <void property="name">
+       <string>Razvoj softvera</string>
+      </void>
+      <void property="obligatory">
+       <int>1</int>
+      </void>
+      <void property="profesor">
+       <object class="ba.unsa.etf.rs.project.Profesor">
+        <void property="datum_zaposljavanja">
+         <object class="java.time.LocalDate" method="parse">
+          <string>2020-03-04</string>
+         </object>
+        </void>
+        <void property="id">
+         <int>1</int>
+        </void>
+        <void property="name">
+         <string>Kerim</string>
+        </void>
+        <void property="surname">
+         <string>Bektasevic</string>
+        </void>
+       </object>
+      </void>
+      <void property="semestar">
+       <int>1</int>
+      </void>
+     </object>
+    </void>
+    <void property="type">
+     <object class="ba.unsa.etf.rs.project.Type">
+      <void property="id">
+       <int>1</int>
+      </void>
+      <void property="name">
+       <string>Predavanje</string>
+      </void>
+     </object>
+    </void>
+   </object>
+  </void>
+ </object>
+</java>

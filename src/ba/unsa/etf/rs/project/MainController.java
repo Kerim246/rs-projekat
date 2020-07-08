@@ -1,7 +1,10 @@
 package ba.unsa.etf.rs.project;
 
+import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
@@ -14,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static javafx.scene.control.PopupControl.USE_COMPUTED_SIZE;
@@ -30,6 +34,7 @@ public class MainController {
     public TextField fldSearch;
     public Label labelStatus;
     private int pom = 0;
+    public ObservableList<Material> materials = FXCollections.observableArrayList();
 
     public MainController(SubjectDAO subjectDAO,int id_profesora){
         this.subjectDAO = subjectDAO;
@@ -50,10 +55,10 @@ public class MainController {
         pom++;
         tableMaterials.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Material>() {
             @Override
-            public void changed(ObservableValue<? extends Material> observableValue, Material oldBook, Material newBook) {
-                if (oldBook != null) {
+            public void changed(ObservableValue<? extends Material> observableValue, Material oldMaterial, Material newMaterial) {
+                if (oldMaterial != null) {
                 }
-                if (newBook == null) {
+                if (newMaterial == null) {
 
                 } else {
                     Material material = (Material) tableMaterials.getSelectionModel().getSelectedItem();
@@ -91,11 +96,22 @@ public class MainController {
     }
 
 
-    public void prebaciSQL(ActionEvent actionEvent) {
+    public void openXML(ActionEvent actionEvent) {
+        ArrayList<Material> mat = XMLFormat.load();
+        if(materials.size() != 0)
+        materials.clear();
+
+        for(Material m : mat){
+            materials.add(m);
+        }
+
+        tableMaterials.setItems(materials);
     }
 
-    public void prebaciXML(ActionEvent actionEvent) {
+    public void saveXML(ActionEvent actionEvent) {
+        XMLFormat.save(subjectDAO.getProfessorMaterial(id_profesora));
     }
+
 
     public void actAddMaterial(ActionEvent actionEvent) {
         labelStatus.setText("Adding Material");

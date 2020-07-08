@@ -73,10 +73,6 @@
          </GridPane.margin>
       </TextArea>
       <ComboBox fx:id="comboType" prefHeight="25.0" prefWidth="182.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <TextField fx:id="fldSubject" GridPane.columnIndex="1" GridPane.rowIndex="3">
-         <GridPane.margin>
-            <Insets right="30.0" />
-         </GridPane.margin>
-      </TextField>
+      <ComboBox fx:id="comboSubject" prefHeight="25.0" prefWidth="183.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
     </children>
 </GridPane>
