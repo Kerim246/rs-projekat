@@ -6,14 +6,12 @@ public class Profesor {
     private int id;
     private String name,surname;
     private LocalDate employee_date;
-    private int subject;
 
     public Profesor() {
     }
 
-    public Profesor(int id, String name, String surname, LocalDate employee_date,int subject) {
+    public Profesor(int id, String name, String surname, LocalDate employee_date) {
         this.id = id;
-        this.subject = subject;
         this.name = name;
         this.surname = surname;
         this.employee_date = employee_date;
@@ -25,14 +23,6 @@ public class Profesor {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getSubject() {
-        return subject;
-    }
-
-    public void setSubject(int predmet) {
-        this.subject = predmet;
     }
 
     public String getName() {

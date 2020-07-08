@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class SubjectDAO {
     private PreparedStatement getProfessorsUpit,getAllAccounts,getProfessorMaterial,getProfesorUpit,nadjiPredmetUpit,getProfessorPredmetUpit,getAllPredmet,nadjiPredmetId,addMaterialUpit,getIdMaterial;
-    private PreparedStatement findTypeStatement,getAllTypesStatement,findTypeStatementName,updateMaterialStatement,deleteMaterialStatement;
+    private PreparedStatement findTypeStatement,getAllTypesStatement,findTypeStatementName,updateMaterialStatement,deleteMaterialStatement,getAllMaterialStatement;
     private SimpleObjectProperty<Material> currentMaterial = new SimpleObjectProperty<>();
     private static SubjectDAO instance;
     private static Connection connection;
@@ -59,10 +59,22 @@ public class SubjectDAO {
             findTypeStatementName = connection.prepareStatement("SELECT * from type where name=?");
             updateMaterialStatement = connection.prepareStatement("UPDATE Material SET name=?,type=?,publication_date=?,subject_id=?,content=? WHERE id=?");
             deleteMaterialStatement = connection.prepareStatement("DELETE FROM Material where id=?");
+            getAllMaterialStatement = connection.prepareStatement("SELECT * from Material");
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+    }
+
+    public ObservableList<Material> getAllMaterials() throws SQLException {
+        ObservableList<Material> materials = FXCollections.observableArrayList();
+
+        ResultSet rs = getAllMaterialStatement.executeQuery();
+
+        while(rs.next()) {
+            materials.add(new Material(rs.getInt(1), rs.getString(2), findType(rs.getInt(3)),  LocalDate.parse(rs.getString(4)), findSubjectId(rs.getInt(5)),rs.getString(6)));
+        }
+        return materials;
     }
 
 
@@ -73,7 +85,7 @@ public class SubjectDAO {
             ResultSet rs = getProfessorsUpit.executeQuery();
 
             while(rs.next()){
-                professors.add(new Profesor(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getDate(4).toLocalDate(),rs.getInt(5)));
+                professors.add(new Profesor(rs.getInt(1),rs.getString(2),rs.getString(3),LocalDate.parse(rs.getString(4))));
             }
         } catch (SQLException e) {
             e.printStackTrace();

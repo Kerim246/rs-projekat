@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import java.net.URL?>
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="152.0" prefWidth="399.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ba.unsa.etf.rs.project.LoginController">
     <stylesheets>
         <URL value="@/css/validation.css" />
@@ -36,14 +36,14 @@
         </TextField>
         <ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
             <buttons>
-                <Button mnemonicParsing="false" onAction="#actLogin" text="Login" />
+                <Button fx:id="btnLogin" mnemonicParsing="false" onAction="#actLogin" text="Login" />
                 <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#actCancel" text="Cancel" />
             </buttons>
             <GridPane.margin>
                 <Insets right="30.0" />
             </GridPane.margin>
         </ButtonBar>
-        <PasswordField fx:id="fldPassword" GridPane.columnIndex="1" GridPane.rowIndex="1" >
+        <PasswordField fx:id="fldPassword" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <GridPane.margin>
                 <Insets right="30.0" />
             </GridPane.margin>
