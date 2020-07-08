@@ -5,16 +5,16 @@ import java.time.LocalDate;
 public class Profesor {
     private int id;
     private String name,surname;
-    private LocalDate employee_date;
+    private LocalDate employment_date;
 
     public Profesor() {
     }
 
-    public Profesor(int id, String name, String surname, LocalDate employee_date) {
+    public Profesor(int id, String name, String surname, LocalDate employment_date) {
         this.id = id;
         this.name = name;
         this.surname = surname;
-        this.employee_date = employee_date;
+        this.employment_date = employment_date;
     }
 
     public int getId() {
@@ -41,11 +41,11 @@ public class Profesor {
         this.surname = surname;
     }
 
-    public LocalDate getDatum_zaposljavanja() {
-        return employee_date;
+    public LocalDate getEmployment_date() {
+        return employment_date;
     }
 
-    public void setDatum_zaposljavanja(LocalDate employee_date) {
-        this.employee_date = employee_date;
+    public void setEmployment_date(LocalDate employee_date) {
+        this.employment_date = employee_date;
     }
 }

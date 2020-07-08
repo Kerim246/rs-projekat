@@ -25,16 +25,22 @@ public class EditController {
     private static SubjectDAO dao;
     private Material material;
     public Button btnOk;
+    private int id_prof = -1;
 
-    public EditController(Material material){
+    public EditController(Material material,int id_prof){
         this.dao = SubjectDAO.getInstance();
         this.material = material;
+        this.id_prof = id_prof;
     }
 
     @FXML
     public void initialize() throws SQLException {
         types = dao.getAllTypes();
+        if(id_prof == -1)
         subjects = dao.getAllSubjects();
+        else {
+            subjects = dao.getAllSubjectsProfessor(id_prof);
+        }
         comboType.setItems(types);
         comboSubject.setItems(subjects);
         if(material == null){
@@ -104,6 +110,7 @@ public class EditController {
     public void actOk(ActionEvent actionEvent) {
         try {
           //   System.out.println(fldName.getText() + " " +findType(comboType.getValue().toString()) + " " +fldContent.getText() + " "+ LocalDate.parse(fldDate.getText()) + " " +findSubject(fldSubject.getText()));
+            if(fldName.getText().length() > 3 && findType(comboType.getValue().toString()) != null && fldDate.getText().length() > 3 && findSubject(comboSubject.getValue().toString()) != null && fldContent.getText().length() > 3);
             material = new Material(fldName.getText(),findType(comboType.getValue().toString()), LocalDate.parse(fldDate.getText()),findSubject(comboSubject.getValue().toString()),fldContent.getText());
 
             Stage stage = (Stage) btnOk.getScene().getWindow();

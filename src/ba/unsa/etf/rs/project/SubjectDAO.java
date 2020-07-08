@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class SubjectDAO {
     private PreparedStatement getProfessorsUpit,getAllAccounts,getProfessorMaterial,getProfesorUpit,nadjiPredmetUpit,getProfessorPredmetUpit,getAllPredmet,nadjiPredmetId,addMaterialUpit,getIdMaterial;
-    private PreparedStatement findTypeStatement,getAllTypesStatement,findTypeStatementName,updateMaterialStatement,deleteMaterialStatement,getAllMaterialStatement,getAllAdminsStatement;
+    private PreparedStatement findTypeStatement,getAllTypesStatement,findTypeStatementName,updateMaterialStatement,deleteMaterialStatement,getAllMaterialStatement,getAllAdminsStatement,getAllSubjectProfessorStatement;
     private SimpleObjectProperty<Material> currentMaterial = new SimpleObjectProperty<>();
     private static SubjectDAO instance;
     private static Connection connection;
@@ -61,6 +61,7 @@ public class SubjectDAO {
             deleteMaterialStatement = connection.prepareStatement("DELETE FROM Material where id=?");
             getAllMaterialStatement = connection.prepareStatement("SELECT * from Material");
             getAllAdminsStatement = connection.prepareStatement("SELECT * from administrator");
+            getAllSubjectProfessorStatement = connection.prepareStatement("SELECT * from subject where professor=?");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -97,6 +98,19 @@ public class SubjectDAO {
         }
 
         return professors;
+    }
+
+    public ObservableList<Subject> getAllSubjectsProfessor(int id_prof) throws SQLException {
+        getAllSubjectProfessorStatement.setInt(1,id_prof);
+        ResultSet rs = getAllSubjectProfessorStatement.executeQuery();
+        ObservableList<Subject> subjects = FXCollections.observableArrayList();
+
+        System.out.println(subjects.size());
+
+        while(rs.next()){
+            subjects.add(new Subject(rs.getInt(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getInt(5),findProfessor(rs.getInt(6))));
+        }
+        return subjects;
     }
 
     public Profesor findProfessor(int id) throws SQLException {
@@ -186,7 +200,7 @@ public class SubjectDAO {
                 profesor.setId(rs1.getInt(1));
                 profesor.setName(rs1.getString(2));
                 profesor.setSurname(rs1.getString(3));
-                profesor.setDatum_zaposljavanja(LocalDate.parse(rs1.getString(4)));
+                profesor.setEmployment_date(LocalDate.parse(rs1.getString(4)));
             }
             p.setId(rs.getInt(1));
             p.setName(rs.getString(2));
@@ -215,7 +229,7 @@ public class SubjectDAO {
                 profesor.setId(rs1.getInt(1));
                 profesor.setName(rs1.getString(2));
                 profesor.setSurname(rs1.getString(3));
-                profesor.setDatum_zaposljavanja(LocalDate.parse(rs1.getString(4)));
+                profesor.setEmployment_date(LocalDate.parse(rs1.getString(4)));
             }
             p.setId(rs.getInt(1));
             p.setName(rs.getString(2));

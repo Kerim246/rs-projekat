@@ -45,9 +45,9 @@ class MainControllerTest {
         robot.clickOn("#btnProfessor");
         Button btnLogin = robot.lookup("#btnLogin").queryAs(Button.class);
         robot.clickOn("#fldUsername");
-        robot.write("Kerim");
+        robot.write("Drugi");
         robot.clickOn("#fldPassword");
-        robot.write("kera123");
+        robot.write("drugi123");
         robot.clickOn("#btnLogin");
         TextField polje1 = robot.lookup("#fldUsername").queryAs(TextField.class);
         TextField polje2 = robot.lookup("#fldPassword").queryAs(TextField.class);
@@ -87,7 +87,7 @@ class MainControllerTest {
             e.printStackTrace();
         }
 
-        robot.clickOn("Razvoj softvera");
+        robot.clickOn("Matematika1");
 
 
         robot.clickOn("#fldContent");
@@ -114,9 +114,9 @@ class MainControllerTest {
         robot.clickOn("#btnProfessor");
         Button btnLogin = robot.lookup("#btnLogin").queryAs(Button.class);
         robot.clickOn("#fldUsername");
-        robot.write("Kerim");
+        robot.write("Drugi");
         robot.clickOn("#fldPassword");
-        robot.write("kera123");
+        robot.write("drugi123");
         robot.clickOn("#btnLogin");
         TextField polje1 = robot.lookup("#fldUsername").queryAs(TextField.class);
         TextField polje2 = robot.lookup("#fldPassword").queryAs(TextField.class);
@@ -159,7 +159,7 @@ class MainControllerTest {
         assertEquals("Tutorijal12",materials.get(materials.size()-1).getName());
         assertEquals("Novi sadrzaj",materials.get(materials.size()-1).getContent());
         assertEquals("2020-04-10",materials.get(materials.size()-1).getPublication_date().toString());
-        assertEquals("Razvoj softvera",materials.get(materials.size()-1).getSubject().getName());
+        assertEquals("Matematika1",materials.get(materials.size()-1).getSubject().getName());
         assertEquals("Tutorijal",materials.get(materials.size()-1).getType().getName());
     }
 
@@ -169,9 +169,9 @@ class MainControllerTest {
         robot.clickOn("#btnProfessor");
         Button btnLogin = robot.lookup("#btnLogin").queryAs(Button.class);
         robot.clickOn("#fldUsername");
-        robot.write("Kerim");
+        robot.write("Drugi");
         robot.clickOn("#fldPassword");
-        robot.write("kera123");
+        robot.write("drugi123");
         robot.clickOn("#btnLogin");
         TextField polje1 = robot.lookup("#fldUsername").queryAs(TextField.class);
         TextField polje2 = robot.lookup("#fldPassword").queryAs(TextField.class);
@@ -187,7 +187,7 @@ class MainControllerTest {
         Button okButton = (Button) dialogPane.lookupButton(ButtonType.OK);
         robot.clickOn(okButton);
         
-        ObservableList<Material> materialss = subjectDAO.getAllMaterials();
+        ObservableList<Material> materialss = subjectDAO.getProfessorMaterial(2);
         assertEquals(2, materialss.size());
     }
 

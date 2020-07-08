@@ -168,7 +168,7 @@ public class MainController {
         Parent root = null;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit.fxml"));
-            EditController editController = new EditController(null);
+            EditController editController = new EditController(null,id_profesora);
             loader.setController(editController);
             root = loader.load();
             editMaterialWindow.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
@@ -232,7 +232,7 @@ public class MainController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit.fxml"));
             Material material = (Material) tableMaterials.getSelectionModel().getSelectedItem();
-            EditController editController = new EditController(material);
+            EditController editController = new EditController(material,id_profesora);
             loader.setController(editController);
             root = loader.load();
             editMaterialWindow.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
