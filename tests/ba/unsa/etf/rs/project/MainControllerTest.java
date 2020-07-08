@@ -24,6 +24,7 @@ import org.testfx.framework.junit5.Start;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(ApplicationExtension.class)
 class MainControllerTest {
@@ -35,7 +36,7 @@ class MainControllerTest {
         stage.setScene(new Scene(root, 800, 600));
         stage.show();
         stage.toFront();
-        subjectDAO = new SubjectDAO();
+        subjectDAO = SubjectDAO.getInstance();
     }
 
     @Test
@@ -53,7 +54,6 @@ class MainControllerTest {
         robot.clickOn("#tbAddMaterial");
       //  SubjectDAO subjectDAO = new SubjectDAO();
 
-        ObservableList<Material> materials = subjectDAO.getAllMaterials();
         robot.clickOn("#fldName");
         robot.write("Predavanje12");
         robot.clickOn("#fldDate");
@@ -83,6 +83,7 @@ class MainControllerTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        ObservableList<Material> materials = subjectDAO.getAllMaterials();
 
         assertEquals("Predavanje12",materials.get(materials.size()-1).getName());
 
@@ -104,6 +105,7 @@ class MainControllerTest {
         robot.clickOn("#materialsTab");
         robot.clickOn("#tableMaterials");
 
+        robot.clickOn("Predavanje12");
         robot.clickOn("#tbEditMaterial");
 
         robot.clickOn("#fldName");
@@ -135,7 +137,6 @@ class MainControllerTest {
         robot.clickOn("#btnOk");
 
         ObservableList<Material> materials = subjectDAO.getAllMaterials();
-
         assertEquals("Tutorijal12",materials.get(materials.size()-1).getName());
         assertEquals("Novi sadrzaj",materials.get(materials.size()-1).getContent());
         assertEquals("2020-04-10",materials.get(materials.size()-1).getPublication_date().toString());
