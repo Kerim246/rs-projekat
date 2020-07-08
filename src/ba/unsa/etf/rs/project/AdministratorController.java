@@ -46,8 +46,8 @@ public class AdministratorController {
                 fldPassword.getStyleClass().removeAll("poljeNijeIspravno");
                 fldPassword.getStyleClass().add("poljeIspravno");
                 subjectDAO = SubjectDAO.getInstance();
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
-                MainController mainController = new MainController(subjectDAO,0);
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/mainAdmin.fxml"));
+                MainController mainController = new MainController(subjectDAO);
                 Stage stage = new Stage();
                 loader.setController(mainController);
                 Parent root = null;

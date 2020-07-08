@@ -31,7 +31,7 @@ class MainControllerTest {
     SubjectDAO subjectDAO;
     @Start
     public void start (Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/FirstWindow.fxml"));
         stage.setTitle("Aplikacija za upravljanje nastavnim materijalima");
         stage.setScene(new Scene(root, 800, 600));
         stage.show();
@@ -42,6 +42,7 @@ class MainControllerTest {
     @Test
     @Order(1)
     void actAddMaterial(FxRobot robot) throws SQLException {
+        robot.clickOn("#btnProfessor");
         Button btnLogin = robot.lookup("#btnLogin").queryAs(Button.class);
         robot.clickOn("#fldUsername");
         robot.write("Kerim");
@@ -81,7 +82,7 @@ class MainControllerTest {
 
         // Čekamo da se pojavi meni
         try {
-            Thread.sleep(400);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -95,7 +96,7 @@ class MainControllerTest {
         robot.clickOn("#btnOk");
 
         try {
-            Thread.sleep(400);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -110,6 +111,7 @@ class MainControllerTest {
     @Test
     @Order(2)
     void actEditMaterial(FxRobot robot) throws SQLException {
+        robot.clickOn("#btnProfessor");
         Button btnLogin = robot.lookup("#btnLogin").queryAs(Button.class);
         robot.clickOn("#fldUsername");
         robot.write("Kerim");
@@ -164,6 +166,7 @@ class MainControllerTest {
     @Test
     @Order(3)
     void actRemoveMaterial(FxRobot robot) throws SQLException {
+        robot.clickOn("#btnProfessor");
         Button btnLogin = robot.lookup("#btnLogin").queryAs(Button.class);
         robot.clickOn("#fldUsername");
         robot.write("Kerim");

@@ -1,6 +1,7 @@
 package ba.unsa.etf.rs.project;
 
 import javafx.beans.Observable;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -17,6 +18,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -30,7 +32,11 @@ public class MainController {
     public TableColumn colName;
     public TableColumn colType;
     public TableColumn colDate;
-    private int id_profesora;
+    public TableColumn colFirstName;
+    public TableColumn colSurname;
+    public TableColumn colEmpDate;
+    public TableView tableProfessors;
+    private int id_profesora=-1;
     public TextField fldSearch;
     public Label labelStatus;
     private int pom = 0;
@@ -41,14 +47,22 @@ public class MainController {
         this.id_profesora = id_profesora;
     }
 
-    @FXML
-    public void initialize(){
-        colSubject.setCellValueFactory(new PropertyValueFactory<Profesor,Integer>("subject"));
-        colName.setCellValueFactory(new PropertyValueFactory<Profesor,Integer>("name"));
-        colType.setCellValueFactory(new PropertyValueFactory<Profesor,Integer>("type"));
-        colDate.setCellValueFactory(new PropertyValueFactory<Profesor,Integer>("publication_date"));
+    public MainController(SubjectDAO subjectDAO){
+        this.subjectDAO = subjectDAO;
+    }
 
+
+    @FXML
+    public void initialize() throws SQLException {
+        colSubject.setCellValueFactory(new PropertyValueFactory<Material,Integer>("subject"));
+        colName.setCellValueFactory(new PropertyValueFactory<Material,Integer>("name"));
+        colType.setCellValueFactory(new PropertyValueFactory<Material,Integer>("type"));
+        colDate.setCellValueFactory(new PropertyValueFactory<Material,Integer>("publication_date"));
+
+        if(id_profesora != -1)
         tableMaterials.setItems(subjectDAO.getProfessorMaterial(id_profesora));
+        else tableMaterials.setItems(subjectDAO.getAllMaterials());
+
         if(pom ==0)
         labelStatus.setText("Welcome to application!");
 
@@ -68,31 +82,66 @@ public class MainController {
             }
         });
 
-        FilteredList<Material> filteredData = new FilteredList<>(subjectDAO.getProfessorMaterial(id_profesora), b->true);
+        if(id_profesora != -1) {
+            FilteredList<Material> filteredData = new FilteredList<>(subjectDAO.getProfessorMaterial(id_profesora), b -> true);
 
-        fldSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredData.setPredicate(material -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-                labelStatus.setText("Searching materials");
+            fldSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+                filteredData.setPredicate(material -> {
+                    if (newValue == null || newValue.isEmpty()) {
+                        return true;
+                    }
+                    labelStatus.setText("Searching materials");
 
-                String lowerCaseFilter = newValue.toLowerCase();
+                    String lowerCaseFilter = newValue.toLowerCase();
 
-                if (material.getName().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
+                    if (material.getName().toLowerCase().contains(lowerCaseFilter)) {
+                        return true;
+                    }
 
-                return false;
+                    return false;
+                });
             });
-        });
+            SortedList<Material> sortedData = new SortedList<>(filteredData);
 
-        SortedList<Material> sortedData = new SortedList<>(filteredData);
+            sortedData.comparatorProperty().bind(tableMaterials.comparatorProperty());
 
-        sortedData.comparatorProperty().bind(tableMaterials.comparatorProperty());
+            tableMaterials.setItems(sortedData);
+        }
+        else {
+            FilteredList<Material> filteredData = new FilteredList<>(subjectDAO.getAllMaterials(), b -> true);
 
-        tableMaterials.setItems(sortedData);
+            fldSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+                filteredData.setPredicate(material -> {
+                    if (newValue == null || newValue.isEmpty()) {
+                        return true;
+                    }
+                    labelStatus.setText("Searching materials");
 
+                    String lowerCaseFilter = newValue.toLowerCase();
+
+                    if (material.getName().toLowerCase().contains(lowerCaseFilter)) {
+                        return true;
+                    }
+
+                    return false;
+                });
+            });
+            SortedList<Material> sortedData = new SortedList<>(filteredData);
+
+            sortedData.comparatorProperty().bind(tableMaterials.comparatorProperty());
+
+            tableMaterials.setItems(sortedData);
+        }
+
+        if(id_profesora == -1) {
+            colFirstName.setCellValueFactory(new PropertyValueFactory<Profesor, Integer>("name"));
+            colSurname.setCellValueFactory(new PropertyValueFactory<Profesor, Integer>("surname"));
+
+            colEmpDate.setCellValueFactory(new PropertyValueFactory<Profesor, Integer>("employment_date"));
+
+
+            tableProfessors.setItems(subjectDAO.getAllProfessors());
+        }
     }
 
 
@@ -130,7 +179,11 @@ public class MainController {
                 if (materijal != null) {
                     subjectDAO.addMaterial(materijal);
                     labelStatus.setText("Material added");
-                    initialize();
+                    try {
+                        initialize();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else {
                     labelStatus.setText("Welcome to application");
@@ -162,7 +215,7 @@ public class MainController {
                 else {
                     labelStatus.setText("Welcome to application!");
                 }
-            } catch(IllegalArgumentException e){
+            } catch(IllegalArgumentException | SQLException e){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Unable to delete material");
@@ -192,7 +245,11 @@ public class MainController {
                 if (materijal != null) {
                     subjectDAO.updateMaterial(materijal);
                     labelStatus.setText("Material edited");
-                    initialize();
+                    try {
+                        initialize();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else {
                     labelStatus.setText("Welcome to application!");
@@ -204,5 +261,14 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void actAddProfessor(ActionEvent actionEvent) {
+    }
+
+    public void actRemoveProfessor(ActionEvent actionEvent) {
+    }
+
+    public void actEditProfessor(ActionEvent actionEvent) {
     }
 }

@@ -88,6 +88,17 @@ public class SubjectDAO {
         return subjects;
     }
 
+    public ObservableList<Profesor> getAllProfessors() throws SQLException {
+        ResultSet rs = getProfesorUpit.executeQuery();
+        ObservableList<Profesor> professors = FXCollections.observableArrayList();
+
+        while(rs.next()){
+            professors.add(new Profesor(rs.getInt(1),rs.getString(2),rs.getString(3),LocalDate.parse(rs.getString(4))));
+        }
+
+        return professors;
+    }
+
     public Profesor findProfessor(int id) throws SQLException {
         getProfesorUpit.setInt(1,id);
 

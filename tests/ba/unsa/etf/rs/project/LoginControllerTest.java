@@ -26,7 +26,7 @@ class LoginControllerTest {
 
     @Start
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/FirstWindow.fxml"));
         primaryStage.setTitle("Aplikacija za upravljanje nastavnim materijalima");
         primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.show();
@@ -42,7 +42,9 @@ class LoginControllerTest {
 
     @Test
     void actLoginTest1(FxRobot robot) throws SQLException {    // Polje nije ispravno jer profesor ne postoji u bazi
+        robot.clickOn("#btnProfessor");
         Button btnLogin = robot.lookup("#btnLogin").queryAs(Button.class);
+        thestage = (Stage)btnLogin.getScene().getWindow();
         robot.clickOn("#fldUsername");
         robot.write("anonymous");
         robot.clickOn("#fldPassword");
@@ -57,7 +59,9 @@ class LoginControllerTest {
 
     @Test
     void actLoginTest2(FxRobot robot) throws SQLException {    // Polje ispravno jer profesor postoji
+        robot.clickOn("#btnProfessor");
         Button btnLogin = robot.lookup("#btnLogin").queryAs(Button.class);
+        thestage = (Stage)btnLogin.getScene().getWindow();
         robot.clickOn("#fldUsername");
         robot.write("Kerim");
         robot.clickOn("#fldPassword");
@@ -71,6 +75,7 @@ class LoginControllerTest {
 
     @Test
     void actCancel(FxRobot robot) {
+        robot.clickOn("#btnProfessor");
         robot.clickOn("#btnCancel");
         assertFalse(thestage.isShowing());
     }
