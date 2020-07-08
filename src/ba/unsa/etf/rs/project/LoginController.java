@@ -27,7 +27,7 @@ public class LoginController {
     public void initialize(){
         fldPassword.setText("");
         fldUsername.setText("");
-        this.subjectDAO = new SubjectDAO();
+        this.subjectDAO = SubjectDAO.getInstance();
     }
 
 

@@ -11,11 +11,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class SubjectDAO {
+    private PreparedStatement getProfessorsUpit,getAllAccounts,getProfessorMaterial,getProfesorUpit,nadjiPredmetUpit,getProfessorPredmetUpit,getAllPredmet,nadjiPredmetId,addMaterialUpit,getIdMaterial;
+    private PreparedStatement findTypeStatement,getAllTypesStatement,findTypeStatementName,updateMaterialStatement,deleteMaterialStatement;
+    private SimpleObjectProperty<Material> currentMaterial = new SimpleObjectProperty<>();
     private static SubjectDAO instance;
     private static Connection connection;
-    private PreparedStatement getProfessorsUpit,getAllAccounts,getProfessorMaterial,getProfesorUpit,nadjiPredmetUpit,getProfessorPredmetUpit,getAllPredmet,nadjiPredmetId,addMaterialUpit,getIdMaterial;
-    private PreparedStatement findTypeStatement,getAllTypesStatement,findTypeStatementName;
-   
+
 
     public static SubjectDAO getInstance() {
         if (instance == null) instance = new SubjectDAO();
@@ -56,6 +57,8 @@ public class SubjectDAO {
             findTypeStatement = connection.prepareStatement("SELECT * from type where id=?");
             getAllTypesStatement = connection.prepareStatement("SELECT * from type");
             findTypeStatementName = connection.prepareStatement("SELECT * from type where name=?");
+            updateMaterialStatement = connection.prepareStatement("UPDATE Material SET name=?,type=?,publication_date=?,subject_id=?,content=? WHERE id=?");
+            deleteMaterialStatement = connection.prepareStatement("DELETE FROM Material where id=?");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -223,5 +226,53 @@ public class SubjectDAO {
             types.add(new Type(rs.getInt(1),rs.getString(2)));
         }
         return types;
+    }
+
+    public void updateMaterial(Material material){
+        try {
+            updateMaterialStatement.setString(1,material.getName());
+            updateMaterialStatement.setInt(2,material.getType().getId());
+            updateMaterialStatement.setString(3,material.getPublication_date().toString());
+            updateMaterialStatement.setInt(4,material.getSubject().getId());
+            updateMaterialStatement.setString(5,material.getContent());
+
+            updateMaterialStatement.setInt(6,currentMaterial.get().getId());
+
+            updateMaterialStatement.executeUpdate();
+
+            currentMaterial.setValue(material);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public Material getCurrentMaterial() {
+        if(currentMaterial == null) return null;
+        return currentMaterial.get();
+    }
+
+    public SimpleObjectProperty<Material> currentMaterialProperty() {
+        return currentMaterial;
+    }
+
+    public void setCurrentMaterial(Material currentMaterial) {
+        if(this.currentMaterial == null){
+            this.currentMaterial = new SimpleObjectProperty<>(currentMaterial);
+        }
+        else
+            this.currentMaterial.set(currentMaterial);
+    }
+
+    public void deleteMaterial(Material material){
+        try {
+            if(material != null) {
+                deleteMaterialStatement.setInt(1, material.getId());
+                deleteMaterialStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
