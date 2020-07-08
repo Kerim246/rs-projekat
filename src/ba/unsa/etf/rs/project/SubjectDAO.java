@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class SubjectDAO {
     private PreparedStatement getProfessorsUpit,getAllAccounts,getProfessorMaterial,getProfesorUpit,nadjiPredmetUpit,getProfessorPredmetUpit,getAllPredmet,nadjiPredmetId,addMaterialUpit,getIdMaterial;
-    private PreparedStatement findTypeStatement,getAllTypesStatement,findTypeStatementName,updateMaterialStatement,deleteMaterialStatement,getAllMaterialStatement;
+    private PreparedStatement findTypeStatement,getAllTypesStatement,findTypeStatementName,updateMaterialStatement,deleteMaterialStatement,getAllMaterialStatement,getAllAdminsStatement;
     private SimpleObjectProperty<Material> currentMaterial = new SimpleObjectProperty<>();
     private static SubjectDAO instance;
     private static Connection connection;
@@ -60,10 +60,21 @@ public class SubjectDAO {
             updateMaterialStatement = connection.prepareStatement("UPDATE Material SET name=?,type=?,publication_date=?,subject_id=?,content=? WHERE id=?");
             deleteMaterialStatement = connection.prepareStatement("DELETE FROM Material where id=?");
             getAllMaterialStatement = connection.prepareStatement("SELECT * from Material");
+            getAllAdminsStatement = connection.prepareStatement("SELECT * from administrator");
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+    }
+
+    public ArrayList<Administrator> getAdmins() throws SQLException {
+        ResultSet rs = getAllAdminsStatement.executeQuery();
+        ArrayList<Administrator> admins = new ArrayList<>();
+        while(rs.next()){
+            admins.add(new Administrator(rs.getInt(1),rs.getString(2),rs.getString(3)));
+        }
+
+        return admins;
     }
 
     public ObservableList<Subject> getAllSubjects() throws SQLException {

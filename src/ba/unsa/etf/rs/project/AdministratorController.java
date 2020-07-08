@@ -11,18 +11,18 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
-public class LoginController {
-
+public class AdministratorController {
     public TextField fldUsername;
     public TextField fldPassword;
     private static SubjectDAO subjectDAO;
     private Button btnCancel;
 
-    public LoginController() {
+    public AdministratorController() {
     }
 
     @FXML
@@ -33,30 +33,29 @@ public class LoginController {
     }
 
 
-    public void actLogin(ActionEvent actionEvent) {
+    public void actLogin(ActionEvent actionEvent) throws SQLException {
         String username = fldUsername.getText();
         String pass = fldPassword.getText();
 
-        ArrayList<Account> profesori = subjectDAO.getAllAccounts();
+        ArrayList<Administrator> admini = subjectDAO.getAdmins();
 
-        for (int i = 0; i < profesori.size(); i++) {
-            if (profesori.get(i).getUsername().equals(username) && profesori.get(i).getPassword().equals(pass)) {
+        for (int i = 0; i < admini.size(); i++) {
+            if (admini.get(i).getUsername().equals(username) && admini.get(i).getPassword().equals(pass)) {
                 fldUsername.getStyleClass().removeAll("poljeNijeIspravno");
                 fldUsername.getStyleClass().add("poljeIspravno");
                 fldPassword.getStyleClass().removeAll("poljeNijeIspravno");
                 fldPassword.getStyleClass().add("poljeIspravno");
                 subjectDAO = SubjectDAO.getInstance();
-                int id_profesora = profesori.get(i).getId();
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
-                MainController mainController = new MainController(subjectDAO,id_profesora);
-                Stage editBookWindow = new Stage();
+                MainController mainController = new MainController(subjectDAO,0);
+                Stage stage = new Stage();
                 loader.setController(mainController);
                 Parent root = null;
                 try {
                     root = loader.load();
-                    editBookWindow.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
-                    editBookWindow.setResizable(false);
-                    editBookWindow.show();
+                    stage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+                    stage.setResizable(false);
+                    stage.show();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
