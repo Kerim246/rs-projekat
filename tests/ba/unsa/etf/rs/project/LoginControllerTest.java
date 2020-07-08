@@ -44,7 +44,6 @@ class LoginControllerTest {
     void actLoginTest1(FxRobot robot) throws SQLException {    // Polje nije ispravno jer profesor ne postoji u bazi
         robot.clickOn("#btnProfessor");
         Button btnLogin = robot.lookup("#btnLogin").queryAs(Button.class);
-        thestage = (Stage)btnLogin.getScene().getWindow();
         robot.clickOn("#fldUsername");
         robot.write("anonymous");
         robot.clickOn("#fldPassword");
@@ -61,7 +60,7 @@ class LoginControllerTest {
     void actLoginTest2(FxRobot robot) throws SQLException {    // Polje ispravno jer profesor postoji
         robot.clickOn("#btnProfessor");
         Button btnLogin = robot.lookup("#btnLogin").queryAs(Button.class);
-        thestage = (Stage)btnLogin.getScene().getWindow();
+        Button btnCancel = robot.lookup("#btnCancel").queryAs(Button.class);
         robot.clickOn("#fldUsername");
         robot.write("Kerim");
         robot.clickOn("#fldPassword");
@@ -76,7 +75,9 @@ class LoginControllerTest {
     @Test
     void actCancel(FxRobot robot) {
         robot.clickOn("#btnProfessor");
+        Button btnCancel = robot.lookup("#btnCancel").queryAs(Button.class);
         robot.clickOn("#btnCancel");
+        thestage = (Stage)btnCancel.getScene().getWindow();
         assertFalse(thestage.isShowing());
     }
 }
