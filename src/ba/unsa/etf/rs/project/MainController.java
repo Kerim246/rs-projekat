@@ -141,6 +141,22 @@ public class MainController {
 
 
             tableProfessors.setItems(subjectDAO.getAllProfessors());
+
+            tableProfessors.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Profesor>() {
+                @Override
+                public void changed(ObservableValue<? extends Profesor> observableValue, Profesor oldProfessor, Profesor newProfessor) {
+                    if (oldProfessor != null) {
+                    }
+                    if (newProfessor == null) {
+
+                    } else {
+                        Profesor profesor = (Profesor) tableProfessors.getSelectionModel().getSelectedItem();
+                        subjectDAO.setCurrentProfessor(profesor);
+                    }
+                    tableProfessors.refresh();
+                }
+            });
+
         }
     }
 
@@ -264,6 +280,41 @@ public class MainController {
     }
 
     public void actAddProfessor(ActionEvent actionEvent) {
+        labelStatus.setText("Adding Professor");
+        Stage editMaterialWindow = new Stage();
+        Parent root = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/editProfessor.fxml"));
+            EditProfessorController editController = new EditProfessorController(null);
+            loader.setController(editController);
+            root = loader.load();
+            editMaterialWindow.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            editMaterialWindow.setResizable(false);
+            editMaterialWindow.show();
+            editMaterialWindow.setOnHiding( event -> {
+                Profesor profesor = editController.getProfessor();
+                if (profesor != null) {
+                    try {
+                        subjectDAO.addProfessor(profesor);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    labelStatus.setText("Professor added");
+                    try {
+                        initialize();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    labelStatus.setText("Welcome to application");
+                }
+
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void actRemoveProfessor(ActionEvent actionEvent) {

@@ -20,6 +20,7 @@ public class EditController {
     public ComboBox comboSubject;
     public TextArea fldContent;
     public ComboBox comboType;
+    public TextField fldProfessor;
     private ObservableList<Type> types;
     private ObservableList<Subject> subjects;
     private static SubjectDAO dao;

@@ -28,7 +28,7 @@ class LoginControllerTest {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/FirstWindow.fxml"));
         primaryStage.setTitle("Aplikacija za upravljanje nastavnim materijalima");
-        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.setScene(new Scene(root, 400, 200));
         primaryStage.show();
         primaryStage.toFront();
         thestage = primaryStage;
@@ -62,9 +62,9 @@ class LoginControllerTest {
         Button btnLogin = robot.lookup("#btnLogin").queryAs(Button.class);
         Button btnCancel = robot.lookup("#btnCancel").queryAs(Button.class);
         robot.clickOn("#fldUsername");
-        robot.write("Kerim");
+        robot.write("Prof");
         robot.clickOn("#fldPassword");
-        robot.write("kera123");
+        robot.write("prof123");
         robot.clickOn("#btnLogin");
         TextField polje1 = robot.lookup("#fldUsername").queryAs(TextField.class);
         TextField polje2 = robot.lookup("#fldPassword").queryAs(TextField.class);

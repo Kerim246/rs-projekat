@@ -11,9 +11,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class SubjectDAO {
+    private PreparedStatement addProfessorStatement,updateProfessorStatement,deleteProfessorStatement,getMaxIdProfessor;
     private PreparedStatement getProfessorsUpit,getAllAccounts,getProfessorMaterial,getProfesorUpit,nadjiPredmetUpit,getProfessorPredmetUpit,getAllPredmet,nadjiPredmetId,addMaterialUpit,getIdMaterial;
     private PreparedStatement findTypeStatement,getAllTypesStatement,findTypeStatementName,updateMaterialStatement,deleteMaterialStatement,getAllMaterialStatement,getAllAdminsStatement,getAllSubjectProfessorStatement;
     private SimpleObjectProperty<Material> currentMaterial = new SimpleObjectProperty<>();
+    private SimpleObjectProperty<Profesor> currentProfessor = new SimpleObjectProperty<>();
     private static SubjectDAO instance;
     private static Connection connection;
 
@@ -62,6 +64,10 @@ public class SubjectDAO {
             getAllMaterialStatement = connection.prepareStatement("SELECT * from Material");
             getAllAdminsStatement = connection.prepareStatement("SELECT * from administrator");
             getAllSubjectProfessorStatement = connection.prepareStatement("SELECT * from subject where professor=?");
+            addProfessorStatement = connection.prepareStatement("INSERT INTO Professor VALUES(?,?,?,?,?)");
+            deleteProfessorStatement = connection.prepareStatement("DELETE FROM Professor where id=?");
+            updateProfessorStatement = connection.prepareStatement("UPDATE Professor SET name=?,surname=?,employment_date=? where id=?");
+            getMaxIdProfessor = connection.prepareStatement("SELECT Max(id)+1 from Professor");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -90,11 +96,11 @@ public class SubjectDAO {
     }
 
     public ObservableList<Profesor> getAllProfessors() throws SQLException {
-        ResultSet rs = getProfesorUpit.executeQuery();
+        ResultSet rs = getProfessorsUpit.executeQuery();
         ObservableList<Profesor> professors = FXCollections.observableArrayList();
 
         while(rs.next()){
-            professors.add(new Profesor(rs.getInt(1),rs.getString(2),rs.getString(3),LocalDate.parse(rs.getString(4))));
+            professors.add(new Profesor(rs.getInt(1),rs.getString(2),rs.getString(3),LocalDate.parse(rs.getString(4)),rs.getInt(5)));
         }
 
         return professors;
@@ -119,7 +125,7 @@ public class SubjectDAO {
         Profesor profesor = new Profesor();
         ResultSet rs = getProfesorUpit.executeQuery();
         if(rs.next()){
-            profesor = new Profesor(rs.getInt(1),rs.getString(2),rs.getString(3),LocalDate.parse(rs.getString(4)));
+            profesor = new Profesor(rs.getInt(1),rs.getString(2),rs.getString(3),LocalDate.parse(rs.getString(4)),rs.getInt(5));
         }
 
         return profesor;
@@ -144,7 +150,7 @@ public class SubjectDAO {
             ResultSet rs = getProfessorsUpit.executeQuery();
 
             while(rs.next()){
-                professors.add(new Profesor(rs.getInt(1),rs.getString(2),rs.getString(3),LocalDate.parse(rs.getString(4))));
+                professors.add(new Profesor(rs.getInt(1),rs.getString(2),rs.getString(3),LocalDate.parse(rs.getString(4)),rs.getInt(5)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -345,5 +351,55 @@ public class SubjectDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void addProfessor(Profesor profesor) throws SQLException {
+        int id = 1;
+        ResultSet rs = getMaxIdProfessor.executeQuery();
+
+        if(rs.next()){
+            id = rs.getInt(1);
+        }
+
+        addProfessorStatement.setInt(1,id);
+        addProfessorStatement.setString(2,profesor.getName());
+        addProfessorStatement.setString(3,profesor.getSurname());
+        addProfessorStatement.setString(4,profesor.getEmployment_date().toString());
+        addProfessorStatement.setInt(5,profesor.getPostalNumber());
+
+        addProfessorStatement.executeUpdate();
+    }
+
+    public void updateProfessor(Profesor profesor) throws SQLException {
+        updateProfessorStatement.setString(1,profesor.getName());
+        updateProfessorStatement.setString(2,profesor.getSurname());
+        updateProfessorStatement.setString(3,profesor.getEmployment_date().toString());
+
+        updateProfessorStatement.setInt(4,currentProfessor.get().getId());
+
+        updateProfessorStatement.executeUpdate();
+    }
+
+    public void deleteProfessor(Profesor profesor) throws SQLException {
+        deleteProfessorStatement.setInt(1,profesor.getId());
+
+        deleteProfessorStatement.executeUpdate();
+    }
+
+    public Profesor getCurrentProfessor() {
+        if(currentProfessor == null) return null;
+        return currentProfessor.get();
+    }
+
+    public SimpleObjectProperty<Profesor> currentProfessorProperty() {
+        return currentProfessor;
+    }
+
+    public void setCurrentProfessor(Profesor currentProfessor) {
+        if(this.currentProfessor == null){
+            this.currentProfessor = new SimpleObjectProperty<>(currentProfessor);
+        }
+        else
+        this.currentProfessor.set(currentProfessor);
     }
 }

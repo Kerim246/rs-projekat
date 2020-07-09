@@ -33,7 +33,7 @@ class MainControllerTest {
     public void start (Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/FirstWindow.fxml"));
         stage.setTitle("Aplikacija za upravljanje nastavnim materijalima");
-        stage.setScene(new Scene(root, 800, 600));
+        stage.setScene(new Scene(root, 400, 200));
         stage.show();
         stage.toFront();
         subjectDAO = SubjectDAO.getInstance();
