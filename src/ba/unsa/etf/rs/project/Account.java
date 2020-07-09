@@ -3,17 +3,24 @@ package ba.unsa.etf.rs.project;
 public class Account {
     private int id;
     private String username,password;
-    private int profesor;
+    private Profesor profesor;
 
     public Account() {
     }
 
-    public Account(int id, String username, String password, int profesor) {
+    public Account(int id, String username, String password, Profesor profesor) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.profesor = profesor;
     }
+
+    public Account(String username, String password, Profesor profesor) {
+        this.username = username;
+        this.password = password;
+        this.profesor = profesor;
+    }
+
 
     public int getId() {
         return id;
@@ -39,11 +46,11 @@ public class Account {
         this.password = password;
     }
 
-    public int getProfesor() {
+    public Profesor getProfesor() {
         return profesor;
     }
 
-    public void setProfesor(int profesor) {
+    public void setProfesor(Profesor profesor) {
         this.profesor = profesor;
     }
 }

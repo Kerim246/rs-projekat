@@ -293,9 +293,10 @@ public class MainController {
             editMaterialWindow.show();
             editMaterialWindow.setOnHiding( event -> {
                 Profesor profesor = editController.getProfessor();
-                if (profesor != null) {
+                Account account = editController.getAccount();
+                if (profesor != null && account != null) {
                     try {
-                        subjectDAO.addProfessor(profesor);
+                        subjectDAO.addProfessor(profesor,account);
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
@@ -317,9 +318,74 @@ public class MainController {
         }
     }
 
-    public void actRemoveProfessor(ActionEvent actionEvent) {
+    public void actRemoveProfessor(ActionEvent actionEvent) throws SQLException {
+        labelStatus.setText("Removing Professor");
+        Profesor professor = (Profesor) tableProfessors.getSelectionModel().getSelectedItem();
+        Account account = subjectDAO.getAccount(professor.getId());
+        if (professor != null && account != null) {
+            try {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Dialog");
+                alert.setHeaderText("");
+                alert.setContentText("Delete professor?");
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    subjectDAO.deleteProfessor(professor,account);
+                    tableProfessors.getSelectionModel().selectFirst();
+                    labelStatus.setText("Professor removed");
+                    initialize();
+                }
+                else {
+                    labelStatus.setText("Welcome to application!");
+                }
+            } catch(IllegalArgumentException | SQLException e){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Unable to delete material");
+                alert.setContentText(e.getMessage());
+                alert.show();
+            }
+        }
+
     }
 
     public void actEditProfessor(ActionEvent actionEvent) {
+        labelStatus.setText("Adding Professor");
+        Stage editMaterialWindow = new Stage();
+        Parent root = null;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/editProfessor.fxml"));
+            Profesor professor = subjectDAO.getCurrentProfessor();
+            EditProfessorController editController = new EditProfessorController(professor);
+            loader.setController(editController);
+            root = loader.load();
+            editMaterialWindow.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
+            editMaterialWindow.setResizable(false);
+            editMaterialWindow.show();
+            editMaterialWindow.setOnHiding( event -> {
+                Profesor profesor = editController.getProfessor();
+                Account account = editController.getAccount();
+                if (profesor != null && account != null) {
+                    try {
+                        subjectDAO.updateProfessor(profesor,account);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    labelStatus.setText("Professor edited");
+                    try {
+                        initialize();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    labelStatus.setText("Welcome to application");
+                }
+
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

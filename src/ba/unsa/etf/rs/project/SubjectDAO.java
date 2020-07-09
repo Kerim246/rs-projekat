@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class SubjectDAO {
-    private PreparedStatement addProfessorStatement,updateProfessorStatement,deleteProfessorStatement,getMaxIdProfessor;
+    private PreparedStatement addProfessorStatement,updateProfessorStatement,deleteProfessorStatement,getMaxIdProfessor,addAccountStatement,updateAccountStatement,deleteAccountStatement,getMaxAccountId,getAccount;
     private PreparedStatement getProfessorsUpit,getAllAccounts,getProfessorMaterial,getProfesorUpit,nadjiPredmetUpit,getProfessorPredmetUpit,getAllPredmet,nadjiPredmetId,addMaterialUpit,getIdMaterial;
     private PreparedStatement findTypeStatement,getAllTypesStatement,findTypeStatementName,updateMaterialStatement,deleteMaterialStatement,getAllMaterialStatement,getAllAdminsStatement,getAllSubjectProfessorStatement;
     private SimpleObjectProperty<Material> currentMaterial = new SimpleObjectProperty<>();
@@ -68,10 +68,27 @@ public class SubjectDAO {
             deleteProfessorStatement = connection.prepareStatement("DELETE FROM Professor where id=?");
             updateProfessorStatement = connection.prepareStatement("UPDATE Professor SET name=?,surname=?,employment_date=? where id=?");
             getMaxIdProfessor = connection.prepareStatement("SELECT Max(id)+1 from Professor");
+            addAccountStatement = connection.prepareStatement("INSERT INTO Account VALUES(?,?,?,?)");
+            updateAccountStatement = connection.prepareStatement("UPDATE Account SET username=?,password=?,professor=? where id=?");
+            deleteAccountStatement = connection.prepareStatement("DELETE FROM Account where id=?");
+            getMaxAccountId = connection.prepareStatement("SELECT Max(id)+1 from Account");
+
+            getAccount = connection.prepareStatement("SELECT * from account where professor=?");
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+    }
+
+    public Account getAccount(int id_prof) throws SQLException {
+         getAccount.setInt(1,id_prof);
+         ResultSet rs = getAccount.executeQuery();
+        Account account = new Account();
+        if(rs.next()){
+            account = new Account(rs.getInt(1),rs.getString(2),rs.getString(3),findProfessor(rs.getInt(4)));
+        }
+
+        return account;
     }
 
     public ArrayList<Administrator> getAdmins() throws SQLException {
@@ -165,7 +182,7 @@ public class SubjectDAO {
             ResultSet rs = getAllAccounts.executeQuery();
 
             while(rs.next()){
-                accounts.add(new Account(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getInt(4)));
+                accounts.add(new Account(rs.getInt(1),rs.getString(2),rs.getString(3),findProfessor(rs.getInt(4))));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -353,7 +370,7 @@ public class SubjectDAO {
         }
     }
 
-    public void addProfessor(Profesor profesor) throws SQLException {
+    public void addProfessor(Profesor profesor,Account account) throws SQLException {
         int id = 1;
         ResultSet rs = getMaxIdProfessor.executeQuery();
 
@@ -368,20 +385,54 @@ public class SubjectDAO {
         addProfessorStatement.setInt(5,profesor.getPostalNumber());
 
         addProfessorStatement.executeUpdate();
+
+        int id1=1;
+       ResultSet rs1 = getMaxAccountId.executeQuery();
+
+        if(rs1.next()){
+            id1 = rs1.getInt(1);
+        }
+
+        addAccountStatement.setInt(1,id1);
+        addAccountStatement.setString(2,account.getUsername());
+        addAccountStatement.setString(3,account.getPassword());
+        addAccountStatement.setInt(4,id);
+
+        addAccountStatement.executeUpdate();
+
     }
 
-    public void updateProfessor(Profesor profesor) throws SQLException {
+    public void updateProfessor(Profesor profesor,Account account) throws SQLException {
         updateProfessorStatement.setString(1,profesor.getName());
         updateProfessorStatement.setString(2,profesor.getSurname());
         updateProfessorStatement.setString(3,profesor.getEmployment_date().toString());
 
         updateProfessorStatement.setInt(4,currentProfessor.get().getId());
 
+        getAccount.setInt(1,profesor.getId());
+        ResultSet rs = getAccount.executeQuery();
+
+        int id=1;
+        if(rs.next()){
+            id = rs.getInt(1);
+        }
+
+        updateAccountStatement.setString(1,account.getUsername());
+        updateAccountStatement.setString(2,account.getPassword());
+        updateAccountStatement.setInt(3,profesor.getId());
+        updateAccountStatement.setInt(4,id);
+
         updateProfessorStatement.executeUpdate();
+
+        updateAccountStatement.executeUpdate();
+
     }
 
-    public void deleteProfessor(Profesor profesor) throws SQLException {
-        deleteProfessorStatement.setInt(1,profesor.getId());
+    public void deleteProfessor(Profesor profesor,Account account) throws SQLException {
+        deleteAccountStatement.setInt(1,account.getId());
+        deleteAccountStatement.executeUpdate();
+
+        deleteProfessorStatement.setInt(1,currentProfessor.get().getId());
 
         deleteProfessorStatement.executeUpdate();
     }
