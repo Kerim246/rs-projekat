@@ -181,14 +181,15 @@ class MainControllerTest {
         robot.clickOn("Predavanje12");
 
         robot.clickOn("#tbRemoveMaterial");
-
+        ObservableList<Material> materialss = subjectDAO.getProfessorMaterial(2);
+        int vel = materialss.size();
 
         DialogPane dialogPane = robot.lookup(".dialog-pane").queryAs(DialogPane.class);
         Button okButton = (Button) dialogPane.lookupButton(ButtonType.OK);
         robot.clickOn(okButton);
         
-        ObservableList<Material> materialss = subjectDAO.getProfessorMaterial(2);
-        assertEquals(2, materialss.size());
+        materialss = subjectDAO.getProfessorMaterial(2);
+        assertEquals(vel-1, materialss.size());
     }
 
 

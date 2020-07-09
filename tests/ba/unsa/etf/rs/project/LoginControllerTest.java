@@ -34,7 +34,7 @@ class LoginControllerTest {
         thestage = primaryStage;
     }
 
-    boolean sadrziStil(TextField polje, String stil) {
+    public static boolean sadrziStil(TextField polje, String stil) {
         for (String s : polje.getStyleClass())
             if (s.equals(stil)) return true;
         return false;

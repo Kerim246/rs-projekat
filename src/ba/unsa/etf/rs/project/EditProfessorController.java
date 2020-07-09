@@ -178,7 +178,7 @@ public class EditProfessorController {
                             professor.setSurname(fldSurname.getText());
                             professor.setEmployment_date(LocalDate.parse(fldDate.getText()));
                             professor.setPostalNumber(postBroj);
-                            account = new Account(fldName.getText(),fldPassword.getText(),professor);
+                            account = new Account(fldUsername.getText(),fldPassword.getText(),professor);
                             Stage stage = (Stage) fldName.getScene().getWindow();
                             stage.close();
                         }
