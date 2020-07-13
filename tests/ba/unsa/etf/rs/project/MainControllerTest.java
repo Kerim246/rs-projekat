@@ -27,8 +27,9 @@ import java.util.ArrayList;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(ApplicationExtension.class)
-class MainControllerTest {
+class MainControllerTest {                   // Nekada testovi padaju,nekada ne
     SubjectDAO subjectDAO;
+    Stage theStage;
     @Start
     public void start (Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/FirstWindow.fxml"));
@@ -37,6 +38,7 @@ class MainControllerTest {
         stage.show();
         stage.toFront();
         subjectDAO = SubjectDAO.getInstance();
+        theStage = stage;
     }
 
     @Test
@@ -61,7 +63,9 @@ class MainControllerTest {
      //   robot.write("2020-08-10");
       //  robot.clickOn("#fldSubject");
       //  robot.write("Razvoj softvera");
+        Platform.runLater(() -> theStage.hide());
 
+        robot.lookup("#comboType").tryQuery().isPresent();
 
         ComboBox comboType = robot.lookup("#comboType").queryAs(ComboBox.class);
 
@@ -75,6 +79,9 @@ class MainControllerTest {
         }
 
         robot.clickOn("Predavanje");
+        Platform.runLater(() -> theStage.hide());
+
+        robot.lookup("#comboSubject").tryQuery().isPresent();
 
         ComboBox comboSubject = robot.lookup("#comboSubject").queryAs(ComboBox.class);
 
@@ -139,6 +146,8 @@ class MainControllerTest {
         robot.clickOn("#fldContent");
         robot.press(KeyCode.CONTROL).press(KeyCode.A).release(KeyCode.A).release(KeyCode.CONTROL);
         robot.write("Novi sadrzaj");
+
+        robot.lookup("#comboType").tryQuery().isPresent();
 
         ComboBox comboType = robot.lookup("#comboType").queryAs(ComboBox.class);
 

@@ -131,6 +131,7 @@ public class MainController {
             sortedData.comparatorProperty().bind(tableMaterials.comparatorProperty());
 
             tableMaterials.setItems(sortedData);
+
         }
 
         if(id_profesora == -1) {
@@ -156,6 +157,30 @@ public class MainController {
                     tableProfessors.refresh();
                 }
             });
+
+            FilteredList<Profesor> filteredDataProfessors = new FilteredList<>(subjectDAO.getAllProfessors(), b -> true);
+
+            fldSearch.textProperty().addListener((observable, oldValue, newValue) -> {
+                filteredDataProfessors.setPredicate(profesor -> {
+                    if (newValue == null || newValue.isEmpty()) {
+                        return true;
+                    }
+                    labelStatus.setText("Searching professors");
+
+                    String lowerCaseFilter = newValue.toLowerCase();
+
+                    if (profesor.getName().toLowerCase().contains(lowerCaseFilter)) {
+                        return true;
+                    }
+
+                    return false;
+                });
+            });
+            SortedList<Profesor> sortedDataProfessors = new SortedList<>(filteredDataProfessors);
+
+            sortedDataProfessors.comparatorProperty().bind(tableProfessors.comparatorProperty());
+
+            tableProfessors.setItems(sortedDataProfessors);
 
         }
     }
@@ -213,9 +238,9 @@ public class MainController {
     }
 
     public void actRemoveMaterial(ActionEvent actionEvent) {
-        labelStatus.setText("Removing Material");
         Material material = (Material) tableMaterials.getSelectionModel().getSelectedItem();
         if (material != null) {
+            labelStatus.setText("Removing Material");
             try {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Confirmation Dialog");
@@ -319,10 +344,11 @@ public class MainController {
     }
 
     public void actRemoveProfessor(ActionEvent actionEvent) throws SQLException {
-        labelStatus.setText("Removing Professor");
         Profesor professor = (Profesor) tableProfessors.getSelectionModel().getSelectedItem();
-        Account account = subjectDAO.getAccount(professor.getId());
+        Account account = new Account();
+        if(professor != null) account = subjectDAO.getAccount(professor.getId());
         if (professor != null && account != null) {
+            labelStatus.setText("Removing Professor");
             try {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Confirmation Dialog");
