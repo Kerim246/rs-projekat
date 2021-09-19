@@ -1,5 +1,5 @@
 package ba.unsa.etf.rs.project;
-
+/*
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -80,4 +80,4 @@ class LoginControllerTest {
         thestage = (Stage)btnCancel.getScene().getWindow();
         assertFalse(thestage.isShowing());
     }
-}
+}*/

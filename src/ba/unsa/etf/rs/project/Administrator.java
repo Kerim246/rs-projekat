@@ -1,8 +1,13 @@
 package ba.unsa.etf.rs.project;
 
-public class Administrator {
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class Administrator extends Person {
     private int id;
     private String username,password;
+
+    public Administrator() {}
 
     public Administrator(int id, String username, String password) {
         this.id = id;
@@ -33,4 +38,5 @@ public class Administrator {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

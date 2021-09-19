@@ -1,14 +1,13 @@
 package ba.unsa.etf.rs.project;
 
 import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
@@ -16,7 +15,7 @@ import java.time.LocalDate;
 
 public class EditController {
     public TextField fldName;
-    public TextField fldDate;
+    public DatePicker fldDate;
     public ComboBox comboSubject;
     public TextArea fldContent;
     public ComboBox comboType;
@@ -27,6 +26,9 @@ public class EditController {
     private Material material;
     public Button btnOk;
     private int id_prof = -1;
+    private String newSubject = "";
+    private String newType = "";
+    private boolean datumIspravan = true;
 
     public EditController(Material material,int id_prof){
         this.dao = SubjectDAO.getInstance();
@@ -47,7 +49,7 @@ public class EditController {
         if(material == null){
             fldName.getStyleClass().add("poljeNijeIspravno");
             fldDate.getStyleClass().add("poljeIspravno");
-            fldDate.setText(LocalDate.now().toString());
+            fldDate.setValue(LocalDate.now());
             fldContent.getStyleClass().add("poljeNijeIspravno");
            // comboSubject.getStyleClass().add("poljeNijeIspravno");
         }
@@ -59,7 +61,7 @@ public class EditController {
 
             fldName.setText(material.getName());
             fldContent.setText(material.getContent());
-            fldDate.setText(material.getPublication_date().toString());
+            fldDate.setValue(material.getPublication_date());
             comboSubject.setValue(material.getSubject().getName());
             comboType.setValue(material.getType());
         }
@@ -81,13 +83,19 @@ public class EditController {
                 fldContent.getStyleClass().add("poljeNijeIspravno");
             }
         });
-        fldDate.textProperty().addListener((obs, oldIme, newIme) -> {
-            if (!newIme.isEmpty() && newIme.length() > 3) {
-                fldDate.getStyleClass().removeAll("poljeNijeIspravno");
-                fldDate.getStyleClass().add("poljeIspravno");
-            } else {
-                fldDate.getStyleClass().removeAll("poljeIspravno");
-                fldDate.getStyleClass().add("poljeNijeIspravno");
+        fldDate.valueProperty().addListener(new ChangeListener<LocalDate>() {
+            @Override
+            public void changed(ObservableValue<? extends LocalDate> observableValue, LocalDate localDate, LocalDate t1) {
+                if (t1 == null || t1.isAfter(LocalDate.now())) {
+                    fldDate.getEditor().getStyleClass().removeAll("poljeIspravno");
+                    fldDate.getEditor().getStyleClass().add("poljeNijeIspravno");
+                    datumIspravan = false;
+
+                } else {
+                    fldDate.getEditor().getStyleClass().removeAll("poljeNijeIspravno");
+                    fldDate.getEditor().getStyleClass().add("poljeIspravno");
+                    datumIspravan = true;
+                }
             }
         });
 
@@ -110,12 +118,50 @@ public class EditController {
 
     public void actOk(ActionEvent actionEvent) {
         try {
-          //   System.out.println(fldName.getText() + " " +findType(comboType.getValue().toString()) + " " +fldContent.getText() + " "+ LocalDate.parse(fldDate.getText()) + " " +findSubject(fldSubject.getText()));
-            if(fldName.getText().length() > 3 && findType(comboType.getValue().toString()) != null && fldDate.getText().length() > 3 && findSubject(comboSubject.getValue().toString()) != null && fldContent.getText().length() > 3);
-            material = new Material(fldName.getText(),findType(comboType.getValue().toString()), LocalDate.parse(fldDate.getText()),findSubject(comboSubject.getValue().toString()),fldContent.getText());
+            if(!datumIspravan){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Incorrect date");
+                alert.setHeaderText("Incorrect date!");
+                alert.setContentText("Please enter valid date!");
+                alert.showAndWait();
+            }
+            if(fldName.getText().length() < 4){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Incorrect name of material");
+                alert.setHeaderText("Incorrect name of material!");
+                alert.setContentText("Name must be atleast 3 characters long!");
+                alert.showAndWait();
+            }
+            if(comboType.getValue() == null){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Incorrect type");
+                alert.setHeaderText("Incorrect type!");
+                alert.setContentText("Please choose a type!");
+                alert.showAndWait();
+            }
+            if(comboSubject.getValue() == null){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Incorrect subject");
+                alert.setHeaderText("Incorrect subject!");
+                alert.setContentText("Please choose a subject!");
+                alert.showAndWait();
+            }
+            if(fldContent.getText().length() < 4){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Incorrect content");
+                alert.setHeaderText("Incorrect content!");
+                alert.setContentText("Please type content!");
+                alert.showAndWait();
+            }
+        //     System.out.println(fldName.getText() + " " +findType(comboType.getValue().toString()) + " " +fldContent.getText() + " "+ fldDate.getValue() + " " +findSubject(comboSubject.getValue().toString()).toString());
+            if (comboSubject.getValue() != null && comboType.getValue() != null) {
+                if(fldName.getText().length() > 3 && findType(comboType.getValue().toString()) != null && datumIspravan && findSubject(comboSubject.getValue().toString()) != null && fldContent.getText().length() > 3 ) {
+                    material = new Material(fldName.getText(), findType(comboType.getValue().toString()), fldDate.getValue(), findSubject(comboSubject.getValue().toString()), fldContent.getText());
+                    Stage stage = (Stage) btnOk.getScene().getWindow();
+                    stage.close();
+                }
+            }
 
-            Stage stage = (Stage) btnOk.getScene().getWindow();
-            stage.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

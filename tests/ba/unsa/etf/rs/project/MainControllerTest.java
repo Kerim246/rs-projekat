@@ -1,5 +1,6 @@
 package ba.unsa.etf.rs.project;
 
+/*
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
@@ -202,4 +203,4 @@ class MainControllerTest {                   // Nekada testovi padaju,nekada ne
     }
 
 
-}
+} */

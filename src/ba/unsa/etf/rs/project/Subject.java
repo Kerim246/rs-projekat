@@ -17,6 +17,15 @@ public class Subject {
         this.name = name;
     }
 
+    public Subject(int id, String name, int ects, int semestar, int obligatory) {
+        this.id = id;
+        this.ects = ects;
+        this.semestar = semestar;
+        this.obligatory = obligatory;
+        this.profesor = profesor;
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }

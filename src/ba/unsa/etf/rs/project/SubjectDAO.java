@@ -1,21 +1,27 @@
 package ba.unsa.etf.rs.project;
 
 import javafx.beans.Observable;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableObjectValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class SubjectDAO {
-    private PreparedStatement addProfessorStatement,updateProfessorStatement,deleteProfessorStatement,getMaxIdProfessor,addAccountStatement,updateAccountStatement,deleteAccountStatement,getMaxAccountId,getAccount;
-    private PreparedStatement getProfessorsUpit,getAllAccounts,getProfessorMaterial,getProfesorUpit,nadjiPredmetUpit,getProfessorPredmetUpit,getAllPredmet,nadjiPredmetId,addMaterialUpit,getIdMaterial;
-    private PreparedStatement findTypeStatement,getAllTypesStatement,findTypeStatementName,updateMaterialStatement,deleteMaterialStatement,getAllMaterialStatement,getAllAdminsStatement,getAllSubjectProfessorStatement;
+    private PreparedStatement addProfessorStatement,updateProfessorStatement,deleteProfessorStatement,getMaxIdProfessor,addAccountStatement,updateAccountStatement,deleteAccountStatement,getMaxAccountId,getAccount,addPersonStatement,getMaxIdPerson;
+    private PreparedStatement getProfessorsUpit,getAllAccounts,getProfessorMaterial,getProfesorUpit,nadjiPredmetUpit,getProfessorPredmetUpit,getAllPredmet,nadjiPredmetId,addMaterialUpit,getIdMaterial,deleteProfessorSubject,findSubjectStatement,updateSubjectProfessor;
+    private PreparedStatement findTypeStatement,getAllTypesStatement,findTypeStatementName,updateMaterialStatement,deleteMaterialStatement,getAllMaterialStatement,getAllAdminsStatement,getAllSubjectProfessorStatement,getSubjectFromProfessor,getProfessorSubject,getSubjectFromProfessor1;
+    private PreparedStatement addAdminStatement,EditAdminStatement,RemoveAdminStatement,deletePersonStatement,updatePersonStatement;
     private SimpleObjectProperty<Material> currentMaterial = new SimpleObjectProperty<>();
     private SimpleObjectProperty<Profesor> currentProfessor = new SimpleObjectProperty<>();
+    private SimpleObjectProperty<Administrator> currentAdmin = new SimpleObjectProperty<>();
+
     private static SubjectDAO instance;
     private static Connection connection;
 
@@ -46,15 +52,30 @@ public class SubjectDAO {
         }
 
         try {
-            getProfessorsUpit = connection.prepareStatement("SELECT * from Professor");
+            addAdminStatement = connection.prepareStatement("INSERT INTO Administrator VALUES(?,?,?)");
+            EditAdminStatement = connection.prepareStatement("UPDATE Administrator SET username=?,password=? WHERE id=?");
+            RemoveAdminStatement= connection.prepareStatement("DELETE FROM Administrator WHERE id=?");
+            deletePersonStatement = connection.prepareStatement("DELETE FROM Person where id=?");
+
+            getProfessorsUpit = connection.prepareStatement("SELECT p.id,p.name,p.surname,pr.employment_date,p.postal_number,p.phone_number,p.birth_year from Professor pr, Person p where p.id = pr.id");
             getAllAccounts = connection.prepareStatement("SELECT a.id,a.username,a.password,a.professor from account a,professor p where a.professor = p.id");
             getProfessorMaterial = connection.prepareStatement("SELECT m.id,m.name,m.type,m.publication_date,m.subject_id,m.content,pr.id from material m,professor pr,subject p,type t where m.subject_id = p.id AND p.professor = pr.id AND t.id = m.type");
             nadjiPredmetUpit = connection.prepareStatement("SELECT * from subject where name=?");
             getAllPredmet = connection.prepareStatement("SELECT * from subject");
-            getProfesorUpit = connection.prepareStatement("SELECT * from professor where id=?");
+            getProfesorUpit = connection.prepareStatement("SELECT p.id,p.name,p.surname,pr.employment_date,p.postal_number,p.phone_number from Professor pr,Person p where p.id = pr.id AND pr.id=?");
             nadjiPredmetId = connection.prepareStatement("SELECT * from subject where id=?");
             addMaterialUpit = connection.prepareStatement("INSERT INTO material VALUES(?,?,?,?,?,?)");
             getIdMaterial = connection.prepareStatement("SELECT Max(id)+1 FROM material");
+            getSubjectFromProfessor = connection.prepareStatement("SELECT s.name FROM Subject s, Professor p WHERE s.professor=?");
+            getSubjectFromProfessor1 = connection.prepareStatement("SELECT * FROM Subject s, Professor p WHERE s.professor=?");
+            updatePersonStatement = connection.prepareStatement("UPDATE Person SET name=?,surname=?,postal_number=?,phone_number=?,birth_year=? WHERE ID=?");
+
+            addPersonStatement = connection.prepareStatement("INSERT INTO Person VALUES(?,?,?,?,?,?)");
+            getMaxIdPerson = connection.prepareStatement("SELECT Max(id)+1 FROM Person");
+            deleteProfessorSubject = connection.prepareStatement("UPDATE Subject SET professor=NULL WHERE professor=?");
+            getProfessorSubject = connection.prepareStatement("SELECT s.id FROM Subject s,Professor p where s.professor=?");
+            findSubjectStatement = connection.prepareStatement("SELECT * from Subject s WHERE s.name=?");
+            updateSubjectProfessor = connection.prepareStatement("UPDATE Subject SET professor=? WHERE id=?");
 
             findTypeStatement = connection.prepareStatement("SELECT * from type where id=?");
             getAllTypesStatement = connection.prepareStatement("SELECT * from type");
@@ -62,11 +83,12 @@ public class SubjectDAO {
             updateMaterialStatement = connection.prepareStatement("UPDATE Material SET name=?,type=?,publication_date=?,subject_id=?,content=? WHERE id=?");
             deleteMaterialStatement = connection.prepareStatement("DELETE FROM Material where id=?");
             getAllMaterialStatement = connection.prepareStatement("SELECT * from Material");
-            getAllAdminsStatement = connection.prepareStatement("SELECT * from administrator");
+
+            getAllAdminsStatement = connection.prepareStatement("SELECT a.id,p.name,p.surname,p.postal_number,p.phone_number,a.username,a.password,p.birth_year from Administrator a, Person p where p.id = a.id");
             getAllSubjectProfessorStatement = connection.prepareStatement("SELECT * from subject where professor=?");
-            addProfessorStatement = connection.prepareStatement("INSERT INTO Professor VALUES(?,?,?,?,?)");
+            addProfessorStatement = connection.prepareStatement("INSERT INTO Professor VALUES(?,?)");
             deleteProfessorStatement = connection.prepareStatement("DELETE FROM Professor where id=?");
-            updateProfessorStatement = connection.prepareStatement("UPDATE Professor SET name=?,surname=?,employment_date=? where id=?");
+            updateProfessorStatement = connection.prepareStatement("UPDATE Professor SET employment_date=? where id=?");
             getMaxIdProfessor = connection.prepareStatement("SELECT Max(id)+1 from Professor");
             addAccountStatement = connection.prepareStatement("INSERT INTO Account VALUES(?,?,?,?)");
             updateAccountStatement = connection.prepareStatement("UPDATE Account SET username=?,password=?,professor=? where id=?");
@@ -80,6 +102,65 @@ public class SubjectDAO {
 
     }
 
+    public int AddingPerson(Person p) throws SQLException {
+        int id=1;
+
+        ResultSet rs = getMaxIdPerson.executeQuery();
+
+        if(rs.next()){
+            id = rs.getInt(1);
+        }
+
+        addPersonStatement.setInt(1,id);
+        addPersonStatement.setString(2,p.getName());
+        addPersonStatement.setString(3,p.getSurname());
+        addPersonStatement.setInt(4,p.getPostalNumber());
+        addPersonStatement.setLong(5,p.getPhone_number());
+        addPersonStatement.setInt(6,p.getBirthYear());
+
+        addPersonStatement.executeUpdate();
+
+        return id;
+    }
+
+    public void addAdmin(Administrator a) throws SQLException {
+        int id= AddingPerson(a);
+        addAdminStatement.setInt(1,id);
+        addAdminStatement.setString(2,a.getUsername());
+        addAdminStatement.setString(3,a.getPassword());
+
+        addAdminStatement.executeUpdate();
+
+    }
+
+    public void editAdmin(Administrator a) throws SQLException {
+        EditAdminStatement.setString(1,a.getUsername());
+        EditAdminStatement.setString(2,a.getPassword());
+        EditAdminStatement.setInt(3,a.getId());
+
+        EditAdminStatement.executeUpdate();
+
+        currentAdmin.setValue(a);
+
+        updatePersonStatement.setString(1,a.getName());
+        updatePersonStatement.setString(2,a.getSurname());
+        updatePersonStatement.setInt(3,a.getPostalNumber());
+        updatePersonStatement.setLong(4,a.getPhone_number());
+        updatePersonStatement.setLong(5,a.getBirthYear());
+
+        updatePersonStatement.setInt(6,a.getId());
+
+        updatePersonStatement.executeUpdate();
+
+    }
+
+    public void removeAdmin(Administrator a) throws SQLException {
+        RemoveAdminStatement.setInt(1,a.getId());
+        RemoveAdminStatement.executeUpdate();
+        deletePersonStatement.setInt(1,a.getId());
+        deletePersonStatement.executeUpdate();
+    }
+
     public Account getAccount(int id_prof) throws SQLException {
          getAccount.setInt(1,id_prof);
          ResultSet rs = getAccount.executeQuery();
@@ -87,15 +168,23 @@ public class SubjectDAO {
         if(rs.next()){
             account = new Account(rs.getInt(1),rs.getString(2),rs.getString(3),findProfessor(rs.getInt(4)));
         }
-
         return account;
     }
 
-    public ArrayList<Administrator> getAdmins() throws SQLException {
+    public ObservableList<Administrator> getAdmins() throws SQLException {
         ResultSet rs = getAllAdminsStatement.executeQuery();
-        ArrayList<Administrator> admins = new ArrayList<>();
+        ObservableList<Administrator> admins = FXCollections.observableArrayList();
         while(rs.next()){
-            admins.add(new Administrator(rs.getInt(1),rs.getString(2),rs.getString(3)));
+            Administrator a = new Administrator();
+            a.setId(rs.getInt(1));
+            a.setName(rs.getString(2));
+            a.setSurname(rs.getString(3));
+            a.setPostalNumber(rs.getInt(4));
+            a.setPhone_number(rs.getLong(5));
+            a.setUsername(rs.getString(6));
+            a.setPassword(rs.getString(7));
+            a.setBirthYear(rs.getInt(8));
+            admins.add(a);
         }
 
         return admins;
@@ -112,15 +201,61 @@ public class SubjectDAO {
         return subjects;
     }
 
+    public String getSubjectFProfessor(Profesor p) throws SQLException {
+        getSubjectFromProfessor.setInt(1,p.getId());
+        ResultSet rs = getSubjectFromProfessor.executeQuery();
+
+        String subjectName ="";
+
+        if(rs.next()){
+            subjectName = rs.getString(1);
+        }
+
+        return subjectName;
+    }
+
+    public Subject findSubjectName(String name) throws SQLException {
+        findSubjectStatement.setString(1,name);
+        ResultSet rs = findSubjectStatement.executeQuery();
+        Subject s = new Subject();
+        if(rs.next()){
+           s = new Subject(rs.getInt(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getInt(5));
+        }
+
+        return s;
+    }
+
     public ObservableList<Profesor> getAllProfessors() throws SQLException {
         ResultSet rs = getProfessorsUpit.executeQuery();
         ObservableList<Profesor> professors = FXCollections.observableArrayList();
+        Profesor p = new Profesor();
 
         while(rs.next()){
-            professors.add(new Profesor(rs.getInt(1),rs.getString(2),rs.getString(3),LocalDate.parse(rs.getString(4)),rs.getInt(5)));
+            p = new Profesor();
+            p.setId(rs.getInt(1));
+            p.setName(rs.getString(2));
+            p.setSurname(rs.getString(3));
+            p.setEmployment_date(LocalDate.parse(rs.getString(4)));
+            p.setPostalNumber(rs.getInt(5));
+            p.setPhone_number(rs.getLong(6));
+            p.setBirthYear(rs.getInt(7));
+            p.setSubject(getEntireSubject(p));
+          //  professors.add(new Profesor(rs.getInt(1),rs.getString(2),rs.getString(3),LocalDate.parse(rs.getString(4)),rs.getInt(5),rs.getLong(6)));
+            professors.add(p);
         }
 
         return professors;
+    }
+
+    public Subject getEntireSubject(Profesor p) throws SQLException {
+        getSubjectFromProfessor1.setInt(1,p.getId());
+        ResultSet rs = getSubjectFromProfessor1.executeQuery();
+        Subject s = new Subject();
+
+        if(rs.next()){
+            s = new Subject(rs.getInt(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getInt(5));
+        }
+        return s;
     }
 
     public ObservableList<Subject> getAllSubjectsProfessor(int id_prof) throws SQLException {
@@ -128,11 +263,10 @@ public class SubjectDAO {
         ResultSet rs = getAllSubjectProfessorStatement.executeQuery();
         ObservableList<Subject> subjects = FXCollections.observableArrayList();
 
-        System.out.println(subjects.size());
-
         while(rs.next()){
             subjects.add(new Subject(rs.getInt(1),rs.getString(2),rs.getInt(3),rs.getInt(4),rs.getInt(5),findProfessor(rs.getInt(6))));
         }
+
         return subjects;
     }
 
@@ -142,7 +276,7 @@ public class SubjectDAO {
         Profesor profesor = new Profesor();
         ResultSet rs = getProfesorUpit.executeQuery();
         if(rs.next()){
-            profesor = new Profesor(rs.getInt(1),rs.getString(2),rs.getString(3),LocalDate.parse(rs.getString(4)),rs.getInt(5));
+            profesor = new Profesor(rs.getInt(1),rs.getString(2),rs.getString(3),LocalDate.parse(rs.getString(4)),rs.getInt(5),rs.getLong(6));
         }
 
         return profesor;
@@ -160,27 +294,11 @@ public class SubjectDAO {
     }
 
 
-    public ArrayList<Profesor> GetAllProfessors(){
-        ArrayList<Profesor> professors = new ArrayList<>();
-
-        try {
-            ResultSet rs = getProfessorsUpit.executeQuery();
-
-            while(rs.next()){
-                professors.add(new Profesor(rs.getInt(1),rs.getString(2),rs.getString(3),LocalDate.parse(rs.getString(4)),rs.getInt(5)));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return professors;
-    }
-
     public ArrayList<Account> getAllAccounts(){
         ArrayList<Account> accounts = new ArrayList<>();
 
         try {
             ResultSet rs = getAllAccounts.executeQuery();
-
             while(rs.next()){
                 accounts.add(new Account(rs.getInt(1),rs.getString(2),rs.getString(3),findProfessor(rs.getInt(4))));
             }
@@ -371,18 +489,10 @@ public class SubjectDAO {
     }
 
     public void addProfessor(Profesor profesor,Account account) throws SQLException {
-        int id = 1;
-        ResultSet rs = getMaxIdProfessor.executeQuery();
-
-        if(rs.next()){
-            id = rs.getInt(1);
-        }
+        int id = AddingPerson(profesor);
 
         addProfessorStatement.setInt(1,id);
-        addProfessorStatement.setString(2,profesor.getName());
-        addProfessorStatement.setString(3,profesor.getSurname());
-        addProfessorStatement.setString(4,profesor.getEmployment_date().toString());
-        addProfessorStatement.setInt(5,profesor.getPostalNumber());
+        addProfessorStatement.setString(2,profesor.getEmployment_date().toString());
 
         addProfessorStatement.executeUpdate();
 
@@ -400,15 +510,17 @@ public class SubjectDAO {
 
         addAccountStatement.executeUpdate();
 
+        updateSubjectProfessor.setInt(1,id);
+        updateSubjectProfessor.setInt(2,profesor.getSubject().getId());
+
+        updateSubjectProfessor.executeUpdate();
+
     }
 
     public void updateProfessor(Profesor profesor,Account account) throws SQLException {
-        updateProfessorStatement.setString(1,profesor.getName());
-        updateProfessorStatement.setString(2,profesor.getSurname());
-        updateProfessorStatement.setString(3,profesor.getEmployment_date().toString());
+        updateProfessorStatement.setString(1,profesor.getEmployment_date().toString());
 
-        updateProfessorStatement.setInt(4,currentProfessor.get().getId());
-
+        updateProfessorStatement.setInt(2,currentProfessor.get().getId());
         getAccount.setInt(1,profesor.getId());
         ResultSet rs = getAccount.executeQuery();
 
@@ -416,7 +528,6 @@ public class SubjectDAO {
         if(rs.next()){
             id = rs.getInt(1);
         }
-
         updateAccountStatement.setString(1,account.getUsername());
         updateAccountStatement.setString(2,account.getPassword());
         updateAccountStatement.setInt(3,profesor.getId());
@@ -425,6 +536,25 @@ public class SubjectDAO {
         updateProfessorStatement.executeUpdate();
 
         updateAccountStatement.executeUpdate();
+
+
+        deleteProfessorSubject.setInt(1,profesor.getId());
+        deleteProfessorSubject.executeUpdate();
+
+        updateSubjectProfessor.setInt(1,profesor.getId());
+        updateSubjectProfessor.setInt(2,profesor.getSubject().getId());
+
+        updateSubjectProfessor.executeUpdate();
+
+        updatePersonStatement.setString(1,profesor.getName());
+        updatePersonStatement.setString(2,profesor.getSurname());
+        updatePersonStatement.setInt(3,profesor.getPostalNumber());
+        updatePersonStatement.setLong(4,profesor.getPhone_number());
+        updatePersonStatement.setLong(5,profesor.getBirthYear());
+
+        updatePersonStatement.setInt(6,profesor.getId());
+
+        updatePersonStatement.executeUpdate();
 
     }
 
@@ -435,6 +565,21 @@ public class SubjectDAO {
         deleteProfessorStatement.setInt(1,currentProfessor.get().getId());
 
         deleteProfessorStatement.executeUpdate();
+
+        getProfessorSubject.setInt(1,currentProfessor.get().getId());
+        ResultSet rs = getProfessorSubject.executeQuery();
+        int id_sub = 0;
+
+        if(rs.next()){
+            id_sub = rs.getInt(1);
+        }
+        deleteProfessorSubject.setInt(1,id_sub);
+
+        deleteProfessorSubject.executeUpdate();
+
+        deletePersonStatement.setInt(1,profesor.getId());
+        deletePersonStatement.executeUpdate();
+
     }
 
     public Profesor getCurrentProfessor() {
@@ -452,5 +597,21 @@ public class SubjectDAO {
         }
         else
         this.currentProfessor.set(currentProfessor);
+    }
+
+    public Administrator getCurrentAdmin() {
+        return currentAdmin.get();
+    }
+
+    public SimpleObjectProperty<Administrator> currentAdminProperty() {
+        return currentAdmin;
+    }
+
+    public void setCurrentAdmin(Administrator currentAdmin) {
+        if(this.currentAdmin == null){
+            this.currentAdmin = new SimpleObjectProperty<>(currentAdmin);
+        }
+        else
+        this.currentAdmin.set(currentAdmin);
     }
 }

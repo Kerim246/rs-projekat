@@ -1,6 +1,5 @@
 package ba.unsa.etf.rs.project;
-
-import javafx.beans.Observable;
+/*
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,7 +21,7 @@ import org.testfx.framework.junit5.Start;
 
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(ApplicationExtension.class)
@@ -192,4 +191,4 @@ class EditProfessorControllerTest {   // Iz nekog razloga nekada prodju testovi,
     }
 
 
-}
+} */

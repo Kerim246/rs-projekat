@@ -2,59 +2,32 @@ package ba.unsa.etf.rs.project;
 
 import java.time.LocalDate;
 
-public class Profesor {
-    private int id,postalNumber;
-    private String name,surname;
+public class Profesor extends Person{
+
     private LocalDate employment_date;
+    private Subject subject;
 
     public Profesor() {
     }
 
-    public Profesor(int id, String name, String surname, LocalDate employment_date,int postalNumber) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
+    public Profesor(int id, String name, String surname, LocalDate employment_date,int postalNumber,long phone_number) {
+        super(id, surname, name, postalNumber,phone_number);
         this.employment_date = employment_date;
-        this.postalNumber = postalNumber;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String ime) {
-        this.name = ime;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
     }
 
     public LocalDate getEmployment_date() {
         return employment_date;
     }
 
-    public void setEmployment_date(LocalDate employee_date) {
-        this.employment_date = employee_date;
+    public void setEmployment_date(LocalDate employment_date) {
+        this.employment_date = employment_date;
     }
 
-    public int getPostalNumber() {
-        return postalNumber;
+    public Subject getSubject() {
+        return subject;
     }
 
-    public void setPostalNumber(int postalNumber) {
-        this.postalNumber = postalNumber;
+    public void setSubject(Subject subject) {
+        this.subject = subject;
     }
 }

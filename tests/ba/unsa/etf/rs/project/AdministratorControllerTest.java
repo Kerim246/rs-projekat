@@ -1,5 +1,5 @@
 package ba.unsa.etf.rs.project;
-
+/*
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -69,4 +69,4 @@ class AdministratorControllerTest {
     }
 
 
-}
+} */

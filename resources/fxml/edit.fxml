@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="355.0" prefWidth="305.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="355.0" prefWidth="305.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <stylesheets>
         <URL value="@/css/validation.css" />
     </stylesheets>
@@ -58,11 +58,6 @@
                 <Insets right="30.0" />
             </GridPane.margin>
         </TextField>
-        <TextField fx:id="fldDate" GridPane.columnIndex="1" GridPane.rowIndex="2">
-            <GridPane.margin>
-                <Insets right="30.0" />
-            </GridPane.margin>
-        </TextField>
         <Label text="Content" GridPane.rowIndex="4">
          <padding>
             <Insets left="5.0" />
@@ -74,5 +69,6 @@
       </TextArea>
       <ComboBox fx:id="comboType" prefHeight="25.0" prefWidth="182.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <ComboBox fx:id="comboSubject" prefHeight="25.0" prefWidth="183.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <DatePicker fx:id="fldDate" prefHeight="25.0" prefWidth="183.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
     </children>
 </GridPane>
