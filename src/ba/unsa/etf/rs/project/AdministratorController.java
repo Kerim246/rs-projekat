@@ -85,9 +85,7 @@ public class AdministratorController implements Validation {
     public static boolean phoneNumberValidation(String str){
 
         String regex = "[0-9]+";
-
         if(str.matches(regex) && str.length() > 6 && str.length() < 10) return true;
-
         return false;
 
     }
